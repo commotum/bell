@@ -28,6 +28,14 @@
   `(sqrt(2)-1)/4 <= eta`. These calculations are independently checked at the
   paper-mathematics level but remain planning facts until the Stage 7 Lean
   leaves compile.
+- `Direction` is ambient `EuclideanSpace Real (Fin 3)`, not a unit-sphere
+  subtype. Bell's uniform statements range over physical unit settings, so an
+  unrestricted `forall a b : Direction` predicate would be stronger and would
+  compare the homogeneous singlet polynomial on nonphysical, unbounded inputs.
+- Bell specifies only averaging within small angles, not a unique cap weight.
+  Supported probability measures could be Dirac masses; removing isolated
+  exceptions additionally requires atomless or suitably surface-continuous
+  averaging.
 
 ## Updated Assumptions
 
@@ -40,8 +48,10 @@
   arities and the single fixed measure continue to encode local response
   dependence and measurement-setting independence structurally.
 - Define the approximation mode as a uniform pointwise-in-settings absolute
-  error with an explicitly nonnegative radius. Do not describe the theorem as
-  an `L^p`, almost-everywhere-in-settings, or arbitrary-topology result.
+  error on explicitly supplied setting sets, with an explicitly nonnegative
+  radius. Instantiate both sets with the unit-direction set. Do not describe
+  the theorem as an unrestricted ambient-vector, `L^p`,
+  almost-everywhere-in-settings, or arbitrary-topology result.
 - First prove a target-agnostic robust inequality using only four fixed error
   bounds, then specialize a global uniform predicate to the calculated singlet
   correlation and the Stage 6 directions.
@@ -53,8 +63,10 @@
   measurability or suitable iterated measurability, and Fubini/Tonelli. The
   current model deliberately supplies only setting-wise hidden-variable
   measurability. Formalize that construction only if the additional API and
-  proof obligations remain proportionate; otherwise record the precise
-  deferment after delivering the stronger clean bounded-response obstruction.
+  proof obligations remain proportionate. A claim that isolated points are
+  removed also needs atomless or surface-absolutely-continuous kernels. Since
+  Bell leaves the weights unspecified, otherwise record the precise deferment
+  after delivering the clean bounded-response obstruction.
 
 ## Big Picture Objective
 
@@ -71,12 +83,14 @@ literal angular-smearing construction is or is not formalized.
   bridges, and only the integrability/range facts consumed by the robust
   inequality.
 - Add a target-agnostic uniform-approximation leaf defining a nonnegative
-  sup-error predicate for two setting-indexed real functions and proving
+  sup-error predicate on explicit setting sets for two setting-indexed real
+  functions and proving
   reflexivity/symmetry or triangle-addition only where consumed.
 - Add `Bell.Inequality.Robust` as a theorem leaf importing only abstract
   hidden-variable modules. Prove the bounded-response integral inequality and
   a four-fixed-errors target theorem; import no quantum or Euclidean geometry.
-- Add `Bell.Geometry.RobustViolation` as the integration leaf. Prove the exact
+- Add `Bell.Geometry.RobustViolation` as the integration leaf. Define the unit
+  direction set and prove the Stage 6 directions belong to it. Prove the exact
   `sqrt(2)` scale identity, the positive lower-bound constant, a finite-setting
   singlet error bound, a global uniform-error corollary, and the
   `epsilon`/`delta` form corresponding to equation (22).
@@ -129,9 +143,9 @@ lake build
 - Derive all singlet values through the existing Stage 5/6 theorems, and derive
   the numerical constant from the explicit Stage 6 geometry. Do not define the
   target as `-inner` inside the approximation theorem.
-- Inspect the global uniform theorem to confirm that its quantifier is
-  `forall a b` outside any hidden-variable a.e. statement and that the radius
-  is explicitly nonnegative.
+- Inspect the uniform theorem to confirm that its quantifier is `forall a in
+  unitDirections, forall b in unitDirections` outside any hidden-variable a.e.
+  statement and that the radius is explicitly nonnegative.
 - Do not claim literal angular averaging, Fubini factorization, or a sphere
   neighborhood error unless those constructions and hypotheses are actually
   defined and proved.
@@ -148,7 +162,7 @@ lake build
 - [ ] A public target-agnostic theorem converts four fixed correlation-error
   bounds into the exact `4*eta` robust target inequality.
 - [ ] A reusable uniform-error predicate and triangle-addition lemma precisely
-  model equations (16)–(18).
+  model equations (16)–(18), with setting domains explicit.
 - [ ] A compiled singlet theorem proves
   `(sqrt(2)-1)/4 <= eta`, and a separate theorem proves this constant positive.
 - [ ] A compiled `epsilon`/`delta` corollary yields

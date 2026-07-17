@@ -142,6 +142,14 @@ unless their concepts receive independent formal definitions.
   `|P(a,b)-P(a,c)| <= 2+P(b,c)+P(b,b)`. Combining four uniform correlation
   error bounds of radius `eta` with the Stage 6 directions gives the planned
   quantitative target `4*eta >= sqrt(2)-1`.
+- Because `Direction` is the ambient real three-space rather than a unit-sphere
+  subtype, Stage 7's literal uniform approximation predicate must expose its
+  setting domains and use the unit-direction set. Quantifying over every
+  ambient vector would be a stronger algebraic convenience, not Bell's claim.
+- Bell does not specify unique angular-cap weights. A literal isolated-point
+  smearing theorem would need parameterized local probability measures plus an
+  atomlessness or surface-absolute-continuity premise; arbitrary supported
+  measures include Dirac masses and do not remove isolated exceptions.
 - Stages 3-6 now check the structural local-model facts, correlation integral,
   response-product integrability and range, correlation-`-1` implication,
   equation (14), Bell inequality, Pauli/involution properties, singlet

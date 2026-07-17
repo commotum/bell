@@ -14,8 +14,10 @@
   `integral_sub`, `integral_congr_ae`, `abs_integral_le_integral_abs`, and
   `integral_mono_ae` under the pinned revision.
 - Bell's printed derivation uses equations (12)-(15). Equation (13) is only
-  setting-wise almost everywhere, and a fixed triple needs only the relations
-  at `b` and `c`.
+  setting-wise almost everywhere. Independent algebraic review shows equation
+  (15) for a fixed triple needs the relation only at `b`; requiring it also at
+  `c` is an avoidable artifact of rewriting every correlation into Alice-only
+  form as in equation (14).
 
 ## Updated Assumptions
 
@@ -27,9 +29,10 @@
   obtain `A = -B` a.e.
 - Equation (14) is an a.e.-congruence rewrite. It does not need a common null
   set over settings and does not itself require a quantum premise.
-- The direct Bell theorem will take `PerfectAnticorrelationAt model b` and
-  `PerfectAnticorrelationAt model c` explicitly. A separate corollary will
-  derive those two premises from diagonal correlations at `b` and `c`.
+- The direct Bell theorem will take only `PerfectAnticorrelationAt model b`.
+  A separate corollary will derive that premise from the one diagonal
+  correlation at `b`. Equation (14) remains available independently for any
+  Bob setting where perfect anticorrelation is known.
 - The abstract theorem will use one polymorphic setting type for both parties,
   one fixed hidden-variable measure, and only fixed-setting measurability/binary
   hypotheses for the chosen triple.
@@ -108,8 +111,8 @@ lake build
   while the diagonal-correlation corollary derives it with the bridge theorem.
 - Inspect theorem signatures to ensure the Bell conclusion is not itself a
   premise and no quantum correlation appears.
-- Confirm the two a.e. relations used are only at the fixed settings `b` and
-  `c`; scan for a common `almost everywhere omega, forall setting` claim.
+- Confirm the inequality uses only the one a.e. relation at fixed setting `b`;
+  scan for a common `almost everywhere omega, forall setting` claim.
 - Confirm the measure remains the model's single setting-independent field and
   no setting-indexed measure is introduced.
 - Confirm abstract inequality imports contain no quantum, matrix, Euclidean,
@@ -128,13 +131,13 @@ lake build
   appropriate fixed-setting a.e. anticorrelation premise.
 - [ ] The public direct theorem proves equation (15) from only the relevant
   abstract probability/local-response assumptions.
-- [ ] A public corollary proves equation (15) from diagonal correlations at the
-  two required settings, deriving rather than assuming anticorrelation.
+- [ ] A public corollary proves equation (15) from the one required diagonal
+  correlation at `b`, deriving rather than assuming anticorrelation.
 - [ ] Every response product/difference used by integral linearity or monotonicity
   is proved integrable under explicit hypotheses.
 - [ ] General-measure and finite-model audits exercise the direct theorem,
   bridge, and diagonal-correlation corollary.
-- [ ] Inspection confirms only finitely many fixed-setting null sets are used and
+- [ ] Inspection confirms only the required fixed-setting null sets are used and
   no continuity, quantum, geometric, or uniform premise enters the core.
 - [ ] `#print axioms` for every headline result reports only understood
   Lean/mathlib foundations.

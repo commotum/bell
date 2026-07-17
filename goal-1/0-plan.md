@@ -18,6 +18,10 @@
 - Stage 4 has begun from the current Stage 3 API. Its scope is equations
   (12)-(15): the extremal-correlation bridge, equation (14), and the abstract
   Bell inequality only. Quantum and geometry modules remain out of scope.
+- For a fixed triple, direct algebra shows equation (15) needs perfect
+  anticorrelation only at `b`; requiring it at `c` as well would be stronger
+  than necessary. Stage 4 will expose this fixed-`b` theorem and derive its
+  premise from the single diagonal correlation `P(b,b) = -1`.
 
 ## Big-Picture Objective
 

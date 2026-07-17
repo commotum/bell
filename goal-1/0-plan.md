@@ -9,6 +9,9 @@
   log, dependency plan, and proposed theorem outline.
 - A minimal pinned Lean project and non-exported API probes now compile. No
   substantive Bell definition or proof has been started.
+- Stage 3 has begun from a clean worktree. Its implementation target is the
+  general measure-theoretic local-model API; no finite/discrete replacement for
+  that API and no Stage 4 inequality is in scope.
 
 ## Big-Picture Objective
 

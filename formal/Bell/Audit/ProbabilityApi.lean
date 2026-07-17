@@ -21,7 +21,10 @@ variable {Ω : Type*} [MeasurableSpace Ω]
 #check Measure
 #check ProbabilityMeasure
 #check IsProbabilityMeasure
+#check AEMeasurable
 #check Integrable
+#check Integrable.of_bound
+#check integrable_const
 #check integral_congr_ae
 #check Filter.Eventually.and
 

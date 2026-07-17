@@ -261,6 +261,161 @@ theorem nullExceptionModel_not_pointwise :
 
 end NullException
 
+section AssumptionBoundaries
+
+/-! The following diagnostic models fail exactly one major premise at a time.
+They are audit evidence, not part of the public API. -/
+
+/-- Without perfect anticorrelation, normalized measurable binary responses can
+violate the claimed inequality. -/
+noncomputable def noAnticorrelationModel :
+    DeterministicLocalModel Bool Bool Unit where
+  hiddenMeasure := Measure.dirac ()
+  aliceResponse := fun _ _ => 1
+  bobResponse := fun setting _ => if setting then -1 else 1
+
+noncomputable instance :
+    IsProbabilityMeasure noAnticorrelationModel.hiddenMeasure := by
+  change IsProbabilityMeasure (Measure.dirac ())
+  infer_instance
+
+theorem noAnticorrelationModel_aliceBinary :
+    AliceBinary noAnticorrelationModel := by
+  intro setting ω
+  norm_num [noAnticorrelationModel, IsBinaryOutcome]
+
+theorem noAnticorrelationModel_bobBinary :
+    BobBinary noAnticorrelationModel := by
+  intro setting ω
+  cases setting <;> norm_num [noAnticorrelationModel, IsBinaryOutcome]
+
+theorem noAnticorrelationModel_aliceAEMeasurable :
+    AliceAEMeasurable noAnticorrelationModel :=
+  fun _ => (measurable_of_finite _).aemeasurable
+
+theorem noAnticorrelationModel_bobAEMeasurable :
+    BobAEMeasurable noAnticorrelationModel :=
+  fun _ => (measurable_of_finite _).aemeasurable
+
+theorem noAnticorrelationModel_correlation_ff :
+    correlation noAnticorrelationModel false false = 1 := by
+  simp [correlation, noAnticorrelationModel]
+
+theorem noAnticorrelationModel_correlation_ft :
+    correlation noAnticorrelationModel false true = -1 := by
+  simp [correlation, noAnticorrelationModel]
+
+theorem noAnticorrelationModel_not_perfect :
+    ¬PerfectAnticorrelationAt noAnticorrelationModel false := by
+  norm_num [PerfectAnticorrelationAt, noAnticorrelationModel, ae_dirac_eq]
+
+theorem noAnticorrelationModel_violates :
+    ¬|correlation noAnticorrelationModel false false -
+        correlation noAnticorrelationModel false true| ≤
+      1 + correlation noAnticorrelationModel false true := by
+  rw [noAnticorrelationModel_correlation_ff,
+    noAnticorrelationModel_correlation_ft]
+  norm_num
+
+/-- Without the binary-range premise, even a normalized pointwise-perfect
+model can violate the inequality. -/
+noncomputable def noBinaryModel :
+    DeterministicLocalModel Unit Unit Unit where
+  hiddenMeasure := Measure.dirac ()
+  aliceResponse := fun _ _ => 2
+  bobResponse := fun _ _ => -2
+
+noncomputable instance : IsProbabilityMeasure noBinaryModel.hiddenMeasure := by
+  change IsProbabilityMeasure (Measure.dirac ())
+  infer_instance
+
+theorem noBinaryModel_aliceAEMeasurable : AliceAEMeasurable noBinaryModel :=
+  fun _ => (measurable_of_finite _).aemeasurable
+
+theorem noBinaryModel_bobAEMeasurable : BobAEMeasurable noBinaryModel :=
+  fun _ => (measurable_of_finite _).aemeasurable
+
+theorem noBinaryModel_pointwisePerfect :
+    PointwisePerfectAnticorrelation noBinaryModel := by
+  intro setting ω
+  cases setting
+  cases ω
+  norm_num [noBinaryModel]
+
+theorem noBinaryModel_not_aliceBinary : ¬AliceBinary noBinaryModel := by
+  intro h
+  have hbad := h () ()
+  norm_num [noBinaryModel, IsBinaryOutcome] at hbad
+
+theorem noBinaryModel_correlation :
+    correlation noBinaryModel () () = -4 := by
+  simp [correlation, noBinaryModel]
+  norm_num
+
+theorem noBinaryModel_violates :
+    ¬|correlation noBinaryModel () () - correlation noBinaryModel () ()| ≤
+      1 + correlation noBinaryModel () () := by
+  rw [noBinaryModel_correlation]
+  norm_num
+
+/-- A measure of total mass two shows why probability normalization cannot be
+omitted, even with measurable pointwise-binary perfectly anticorrelated
+responses. -/
+noncomputable def massTwo : Measure Unit :=
+  (2 : ENNReal) • Measure.dirac ()
+
+theorem massTwo_univ : massTwo Set.univ = 2 := by
+  simp [massTwo]
+
+noncomputable def noNormalizationModel :
+    DeterministicLocalModel Unit Unit Unit where
+  hiddenMeasure := massTwo
+  aliceResponse := fun _ _ => 1
+  bobResponse := fun _ _ => -1
+
+theorem noNormalizationModel_aliceBinary :
+    AliceBinary noNormalizationModel := by
+  intro setting ω
+  norm_num [noNormalizationModel, IsBinaryOutcome]
+
+theorem noNormalizationModel_bobBinary : BobBinary noNormalizationModel := by
+  intro setting ω
+  norm_num [noNormalizationModel, IsBinaryOutcome]
+
+theorem noNormalizationModel_aliceAEMeasurable :
+    AliceAEMeasurable noNormalizationModel :=
+  fun _ => (measurable_of_finite _).aemeasurable
+
+theorem noNormalizationModel_bobAEMeasurable :
+    BobAEMeasurable noNormalizationModel :=
+  fun _ => (measurable_of_finite _).aemeasurable
+
+theorem noNormalizationModel_pointwisePerfect :
+    PointwisePerfectAnticorrelation noNormalizationModel := by
+  intro setting ω
+  cases setting
+  cases ω
+  norm_num [noNormalizationModel]
+
+theorem noNormalizationModel_correlation :
+    correlation noNormalizationModel () () = -2 := by
+  rw [correlation]
+  simp only [noNormalizationModel, massTwo, one_mul]
+  calc
+    (∫ _ : Unit, (-(1 : ℝ)) ∂(2 : ENNReal) • Measure.dirac ()) =
+        (2 : ENNReal).toReal • ∫ _ : Unit, (-(1 : ℝ)) ∂Measure.dirac () :=
+      integral_smul_measure _ _
+    _ = -2 := by norm_num
+
+theorem noNormalizationModel_violates :
+    ¬|correlation noNormalizationModel () () -
+        correlation noNormalizationModel () ()| ≤
+      1 + correlation noNormalizationModel () () := by
+  rw [noNormalizationModel_correlation]
+  norm_num
+
+end AssumptionBoundaries
+
 #print axioms Bell.HiddenVariable.perfectAnticorrelationAt_of_correlation_eq_neg_one
 #print axioms Bell.HiddenVariable.correlation_eq_neg_integral_alice_mul_of_perfectAnticorrelationAt
 #print axioms Bell.Inequality.bell_original_of_perfectAnticorrelationAt

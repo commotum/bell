@@ -3,25 +3,29 @@
 ## Status
 
 - Scaffold created 2026-07-17.
-- Stages 1 (`1-GUARDRAILS`), 2 (`2-BOOTSTRAP`), and 3 (`3-LOCAL-MODEL`)
-  completed 2026-07-17; Stage 4 (`4-BELL-BOUND`) is next.
+- Stages 1 (`1-GUARDRAILS`), 2 (`2-BOOTSTRAP`), 3 (`3-LOCAL-MODEL`), and
+  4 (`4-BELL-BOUND`) completed 2026-07-17; Stage 5 (`5-SINGLET`) is next.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
 - The pinned project now exports a general-measure deterministic local-model
-  API, correlation, integrability/range theorems, and distinct pointwise/a.e.
-  perfect-anticorrelation predicates. Bell's inequality and all quantum work
-  remain unimplemented.
+  API, correlation and range theorems, distinct pointwise/a.e.
+  perfect-anticorrelation predicates, the fixed-setting extremal-correlation
+  bridge, equation (14), and Bell's original inequality. All quantum work
+  remains unimplemented.
 - Stage 3 added `Bell.HiddenVariable.Basic`, `Correlation`, and
   `PerfectAnticorrelation`, all re-exported by `Bell.lean`, plus the non-exported
   `Bell.Audit.LocalModel` verification leaf. Exact results and audit evidence
   are in `goal-1/3-LOCAL-MODEL.md`.
-- Stage 4 has begun from the current Stage 3 API. Its scope is equations
-  (12)-(15): the extremal-correlation bridge, equation (14), and the abstract
-  Bell inequality only. Quantum and geometry modules remain out of scope.
-- For a fixed triple, direct algebra shows equation (15) needs perfect
+- Stage 4 added `Bell.Inequality.Original`, extended
+  `Bell.HiddenVariable.PerfectAnticorrelation`, re-exported the stable theorem
+  leaf from `Bell.lean`, and added the non-exported
+  `Bell.Audit.OriginalInequality`. Exact results are in
+  `goal-1/4-BELL-BOUND.md`.
+- For a fixed triple, checked direct algebra shows equation (15) needs perfect
   anticorrelation only at `b`; requiring it at `c` as well would be stronger
-  than necessary. Stage 4 will expose this fixed-`b` theorem and derive its
-  premise from the single diagonal correlation `P(b,b) = -1`.
+  than necessary. The public direct theorem uses this minimal fixed-`b`
+  premise, and its corollary derives it from the single diagonal correlation
+  `P(b,b) = -1`.
 
 ## Big-Picture Objective
 
@@ -82,8 +86,9 @@ unless their concepts receive independent formal definitions.
   commands are in `goal-1/1-GUARDRAILS.md`.
 - The Lean project is under `formal/`, pinned to Lean `v4.31.0` and mathlib
   commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. Its public `Bell` root
-  re-exports the three Stage 3 hidden-variable modules. Four non-exported audit
-  leaves cover the original dependency probes and the local-model API.
+  re-exports the three hidden-variable modules and the original-inequality
+  leaf. Five non-exported audit leaves cover dependency probes, the local-model
+  API, and the Stage 4 inequality.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
@@ -106,10 +111,10 @@ unless their concepts receive independent formal definitions.
 - Directions such as `a=e1`, `c=e2`, and
   `b=(e1+e2)/sqrt(2)` give
   `a dot c=0` and `a dot b=b dot c=1/sqrt(2)`, contradicting the inequality.
-- Stage 3 now checks the structural local-model facts, the correlation integral,
-  response-product integrability, and its `[-1,1]` bound. The correlation-`-1`
-  implication, Bell inequality, singlet formula, and geometric contradiction
-  remain planning facts until their later stages compile.
+- Stages 3-4 now check the structural local-model facts, correlation integral,
+  response-product integrability and range, correlation-`-1` implication,
+  equation (14), and Bell inequality. The singlet formula and geometric
+  contradiction remain planning facts until their later stages compile.
 
 ### Assumptions and open design hypotheses
 
@@ -176,8 +181,9 @@ The original objective is complete only when all of the following hold:
 | Sec. III, (8)–(10), p. 197 | Uniform-sphere local example and linear-in-angle correlation | Optional diagnostic/example; verify sphere measure and boundaries; equation (9)'s printed left side is corrected explicitly |
 | Sec. III, (11), p. 197 | Isotropic mixture correlation `-(1/3)a dot b` | Optional quantum example, outside minimum core |
 | Sec. III, final paragraph, p. 197 | Nonlocal construction reproducing the correlation | Documentation or optional countermodel, explicitly nonlocal; same “rotate towards” correction as (6) |
-| Sec. IV, (13), p. 197 | Perfect anticorrelation from correlation `-1` | Stage 3 defines pointwise/fixed-setting a.e. targets; Stage 4 must prove the implication and audit null-set quantifiers |
-| Sec. IV, (14)–(15), pp. 197–198 | Original Bell inequality | Central abstract theorem, independent of quantum mechanics |
+| Sec. IV, (13), p. 197 | Perfect anticorrelation from correlation `-1` | `perfectAnticorrelationAt_of_correlation_eq_neg_one`, fixed-setting a.e.; audited with a null exception that prevents pointwise strengthening |
+| Sec. IV, (14), p. 197 | Rewrite using perfect anticorrelation | `correlation_eq_neg_integral_alice_mul_of_perfectAnticorrelationAt` |
+| Sec. IV, (15), pp. 197–198 | Original Bell inequality | `bell_original_of_perfectAnticorrelationAt` and the diagonal-correlation corollary; general arbitrary probability measure, no quantum premise |
 | Sec. IV, (16)–(22), pp. 198–199 | Smoothed uniform non-approximation bound | Later robust theorem; make averaging measures and uniform quantifiers precise |
 | Sec. V, p. 199 | Higher-dimensional embedding/generalization | Later optional generalization after the two-qubit core |
 | Sec. VI, p. 199 | Nonlocal influence, instantaneous signaling, Lorentz claim | Prose interpretation only absent additional physical definitions/premises |
@@ -254,6 +260,13 @@ obligations remain pending.
     it implies the setting-wise a.e. predicate used by the integration theorems.
     This changes no paper consequence because null-set modifications do not
     affect the correlation, but the two notions remain distinct in the API.
+18. **Equation (15) needs anticorrelation only at `b` for a fixed triple.**
+    Rewriting all three correlations through equation (14) suggests relations
+    at both `b` and `c`, but the mixed Alice/Bob pointwise algebra proves the
+    displayed inequality from `PerfectAnticorrelationAt model b` alone. The
+    direct theorem uses this weaker premise, and the diagonal corollary assumes
+    only `P(b,b) = -1`. This is a checked assumption minimization, not a change
+    to the inequality's conclusion.
 
 ## Dependency and Module Notes
 
@@ -321,11 +334,16 @@ conventions before implementation.
   Stage 3 pointwise and fixed-setting a.e. equality predicates.
 - `responseProduct_integrable` and `correlation_mem_Icc`: actual Stage 3
   analytic results under explicit fixed-setting assumptions.
-- `perfectAnticorrelationAt_of_correlation_eq_neg_one`: derives the preceding
-  a.e. relation under binary and probability hypotheses.
-- `bell_original`: proves
-  `abs (P a b - P a c) <= 1 + P b c` from the exact local hypotheses needed at
-  `b` and `c`.
+- `perfectAnticorrelationAt_of_correlation_eq_neg_one`: actual Stage 4 theorem
+  deriving the fixed-setting a.e. relation under explicit normalization,
+  measurability, and binary hypotheses.
+- `correlation_eq_neg_integral_alice_mul_of_perfectAnticorrelationAt`: actual
+  Stage 4 equation (14) rewrite at one Bob setting.
+- `bell_original_of_perfectAnticorrelationAt`: actual Stage 4 theorem proving
+  `abs (P a b - P a c) <= 1 + P b c` from the minimal fixed-`b`
+  anticorrelation and fixed-setting analytic hypotheses.
+- `bell_original_of_diagonal_correlation_eq_neg_one`: actual Stage 4 corollary
+  deriving the fixed-`b` relation from `P(b,b) = -1`.
 - `bell_original_finite`: optional finite/discrete specialization used as an
   explanatory bridge, not the final general result.
 - `pauli`, `spinObservable`, `singletState`, `quantumExpectation`: independently
@@ -451,7 +469,7 @@ Completion evidence, public declaration inventory, finite/general examples,
 quantifier audit, build results, and exact axiom output are recorded in
 `goal-1/3-LOCAL-MODEL.md`.
 
-### 4-BELL-BOUND
+### 4-BELL-BOUND — Complete (2026-07-17)
 
 #### Big Picture Objective
 
@@ -478,6 +496,10 @@ correlation to setting-wise almost-everywhere anticorrelation.
   premise was introduced.
 - `#print axioms` for main results is recorded and understood; focused/full
   builds, hole/shortcut scans, and `git diff --check` pass.
+
+Completion evidence, exact theorem signatures, finite and adversarial models,
+failure-driven corrections, import/quantifier scans, and axiom output are
+recorded in `goal-1/4-BELL-BOUND.md`.
 
 ### 5-SINGLET
 

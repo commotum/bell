@@ -5,7 +5,7 @@
 - Scaffold created 2026-07-17.
 - Stages 1 (`1-GUARDRAILS`), 2 (`2-BOOTSTRAP`), 3 (`3-LOCAL-MODEL`),
   4 (`4-BELL-BOUND`), and 5 (`5-SINGLET`) completed 2026-07-17; Stage 6
-  (`6-VIOLATION`) is next.
+  (`6-VIOLATION`) began 2026-07-17 and is in progress.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
 - The pinned project now exports a general-measure deterministic local-model
@@ -121,6 +121,12 @@ unless their concepts receive independent formal definitions.
 - Directions such as `a=e1`, `c=e2`, and
   `b=(e1+e2)/sqrt(2)` give
   `a dot c=0` and `a dot b=b dot c=1/sqrt(2)`, contradicting the inequality.
+- At the start of Stage 6, the focused baseline build of
+  `Bell.Inequality.Original`, `Bell.Quantum.Singlet`,
+  `Bell.Audit.GeometryApi`, and `Bell` succeeds under the pinned toolchain.
+  The intended contradiction uses exactly the four singlet correlations at
+  `(a,b)`, `(a,c)`, `(b,c)`, and `(b,b)`; the last derives the fixed-setting
+  perfect anticorrelation needed by the abstract theorem.
 - Stages 3-5 now check the structural local-model facts, correlation integral,
   response-product integrability and range, correlation-`-1` implication,
   equation (14), Bell inequality, Pauli/involution properties, singlet
@@ -568,7 +574,7 @@ Completion evidence, exact conventions, declaration inventory, direct basis
 checks, dependency scans, failure-driven corrections, and axiom output are
 recorded in `goal-1/5-SINGLET.md`.
 
-### 6-VIOLATION
+### 6-VIOLATION — In progress (2026-07-17)
 
 #### Big Picture Objective
 

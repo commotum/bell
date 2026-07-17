@@ -4,6 +4,7 @@ public import Bell.Quantum.Basic
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.LinearAlgebra.Matrix.Hermitian
 import Mathlib.LinearAlgebra.Matrix.Notation
+import Mathlib.Tactic.FinCases
 
 /-!
 # Pauli spin observables
@@ -72,5 +73,30 @@ theorem spinObservable_axisY :
 theorem spinObservable_axisZ :
     spinObservable (EuclideanSpace.single (2 : Fin 3) (1 : ℝ)) = pauliZ := by
   simp [spinObservable]
+
+/-- The square of a directional Pauli observable is its squared coordinate
+length times the identity. -/
+theorem spinObservable_mul_self (a : Direction) :
+    spinObservable a * spinObservable a =
+      ((a 0 * a 0 + a 1 * a 1 + a 2 * a 2 : ℝ) : ℂ) •
+        (1 : QubitOperator) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [spinObservable, pauliX, pauliY, pauliZ, Matrix.mul_apply,
+      Fin.sum_univ_two] <;>
+    ring_nf <;>
+    rw [Complex.I_sq] <;>
+    ring
+
+/-- A unit-length directional observable is an involution, giving the usual
+binary `±1` spin spectrum in finite dimension. -/
+theorem spinObservable_sq_eq_one_of_inner_self_eq_one (a : Direction)
+    (ha : inner ℝ a a = 1) :
+    spinObservable a ^ 2 = 1 := by
+  rw [pow_two, spinObservable_mul_self]
+  have hcoord : a 0 * a 0 + a 1 * a 1 + a 2 * a 2 = 1 := by
+    simpa [PiLp.inner_apply, Fin.sum_univ_three] using ha
+  rw [hcoord]
+  norm_num
 
 end Bell.Quantum

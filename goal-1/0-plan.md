@@ -15,6 +15,9 @@
   `PerfectAnticorrelation`, all re-exported by `Bell.lean`, plus the non-exported
   `Bell.Audit.LocalModel` verification leaf. Exact results and audit evidence
   are in `goal-1/3-LOCAL-MODEL.md`.
+- Stage 4 has begun from the current Stage 3 API. Its scope is equations
+  (12)-(15): the extremal-correlation bridge, equation (14), and the abstract
+  Bell inequality only. Quantum and geometry modules remain out of scope.
 
 ## Big-Picture Objective
 

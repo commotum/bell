@@ -312,5 +312,22 @@ file. Run `git diff --check` and a repository status review at every stage end.
   correction items 15 and 16.
 - No Lean project or proof was created; Stage 2 remains the first implementation
   stage.
-- Exact final verification outputs are appended after the final checks are run.
+- Final verification on 2026-07-17 produced:
 
+  - `pdfinfo bell-1964/bell-1964.pdf`: `Pages: 6`, `Encrypted: no`, page size
+    `523.92 x 719.04 pts`.
+  - `sha256sum bell-1964/bell-1964.pdf`:
+    `bb889c2f4909269f58d65662e232df2f5c7a5217829b388ac5a5eb9416d1d9b6`.
+  - Equation-tag check: exactly 22 tags, exactly one each for `(1)` through
+    `(22)`.
+  - Section-heading check: Sections I–VI present at transcription lines 12, 16,
+    46, 122, 261, and 265 respectively.
+  - Source-link check: the PDF target exists and no absent
+    `images/page-*.jpg` reference remains.
+  - Lean-scope check: `0 Lean files; no Lean/Lake setup`.
+  - Plan check: Stage 1 is marked complete and Stage 2 remains next.
+  - `git diff --check`: pass.
+  - Artifact scope: `bell-1964/bell-1964.md`, `goal-1/0-plan.md`, and this stage
+    record. Repository autosave commit `2f28433` captured their initial stage
+    versions during verification; the final evidence append remained the only
+    working-tree modification at the subsequent status check.

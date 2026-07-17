@@ -94,9 +94,22 @@ theorem spinObservable_sq_eq_one_of_inner_self_eq_one (a : Direction)
     (ha : inner ℝ a a = 1) :
     spinObservable a ^ 2 = 1 := by
   rw [pow_two, spinObservable_mul_self]
+  have hinter_general : ∀ x y : Direction,
+      inner ℝ x y = ∑ i, x i * y i := by
+    intro x y
+    simp [PiLp.inner_apply, mul_comm]
+  have hinter : inner ℝ a a = ∑ i, a i * a i := hinter_general a a
+  rw [hinter] at ha
   have hcoord : a 0 * a 0 + a 1 * a 1 + a 2 * a 2 = 1 := by
-    simpa [PiLp.inner_apply, Fin.sum_univ_three] using ha
+    simpa [Fin.sum_univ_three] using ha
   rw [hcoord]
   norm_num
+
+theorem spinObservable_sq_eq_one_of_norm_eq_one (a : Direction)
+    (ha : ‖a‖ = 1) :
+    spinObservable a ^ 2 = 1 :=
+  spinObservable_sq_eq_one_of_inner_self_eq_one a <| by
+    rw [real_inner_self_eq_norm_sq, ha]
+    norm_num
 
 end Bell.Quantum

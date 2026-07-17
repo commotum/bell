@@ -35,6 +35,15 @@ second index. -/
 def twoSpinObservable (a b : Direction) : TwoQubitOperator :=
   spinObservable a ⊗ₖ spinObservable b
 
+/-- Complex singlet expectation of the two directional spin observables. -/
+noncomputable def singletSpinExpectation (a b : Direction) : ℂ :=
+  pureExpectation singletState (twoSpinObservable a b)
+
+/-- Real correlation extracted from the explicitly defined complex
+expectation. -/
+noncomputable def singletCorrelation (a b : Direction) : ℝ :=
+  (singletSpinExpectation a b).re
+
 theorem singletAmplitude_sq : singletAmplitude ^ 2 = (1 / 2 : ℝ) := by
   rw [singletAmplitude, inv_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
   norm_num
@@ -88,14 +97,20 @@ theorem singlet_spin_expectation_coordinates (a b : Direction) :
   rw [singletAmplitude_sq_complex, Complex.I_sq]
   ring
 
-/-- Bell's equation (3): the explicitly calculated singlet expectation is the
-negative real Euclidean inner product, embedded in the complex scalars. -/
-theorem singlet_spin_correlation (a b : Direction) :
-    pureExpectation singletState (twoSpinObservable a b) =
+/-- Complex expectation form of Bell's equation (3). -/
+theorem singlet_spin_expectation (a b : Direction) :
+    singletSpinExpectation a b =
       ((-(inner ℝ a b) : ℝ) : ℂ) := by
+  rw [singletSpinExpectation]
   rw [show inner ℝ a b =
       a 0 * b 0 + a 1 * b 1 + a 2 * b 2 by
     simp [PiLp.inner_apply, Fin.sum_univ_three, mul_comm]]
   exact singlet_spin_expectation_coordinates a b
+
+/-- Bell's real-valued singlet correlation `-a · b`. -/
+theorem singlet_spin_correlation (a b : Direction) :
+    singletCorrelation a b = -inner ℝ a b := by
+  rw [singletCorrelation, singlet_spin_expectation]
+  simp
 
 end Bell.Quantum

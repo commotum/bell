@@ -3,15 +3,17 @@
 ## Status
 
 - Scaffold created 2026-07-17.
-- Stages 1 (`1-GUARDRAILS`), 2 (`2-BOOTSTRAP`), 3 (`3-LOCAL-MODEL`), and
-  4 (`4-BELL-BOUND`) completed 2026-07-17; Stage 5 (`5-SINGLET`) is next.
+- Stages 1 (`1-GUARDRAILS`), 2 (`2-BOOTSTRAP`), 3 (`3-LOCAL-MODEL`),
+  4 (`4-BELL-BOUND`), and 5 (`5-SINGLET`) completed 2026-07-17; Stage 6
+  (`6-VIOLATION`) is next.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
 - The pinned project now exports a general-measure deterministic local-model
   API, correlation and range theorems, distinct pointwise/a.e.
   perfect-anticorrelation predicates, the fixed-setting extremal-correlation
-  bridge, equation (14), and Bell's original inequality. All quantum work
-  remains unimplemented.
+  bridge, equation (14), Bell's original inequality, and the independently
+  calculated finite-dimensional singlet correlation. The concrete geometric
+  contradiction remains unimplemented.
 - Stage 3 added `Bell.HiddenVariable.Basic`, `Correlation`, and
   `PerfectAnticorrelation`, all re-exported by `Bell.lean`, plus the non-exported
   `Bell.Audit.LocalModel` verification leaf. Exact results and audit evidence
@@ -21,10 +23,11 @@
   leaf from `Bell.lean`, and added the non-exported
   `Bell.Audit.OriginalInequality`. Exact results are in
   `goal-1/4-BELL-BOUND.md`.
-- Stage 5 has begun from the checked Stage 2 finite-matrix and Euclidean API
-  probes. Its scope is only the independent definition and calculation of the
-  two-qubit singlet correlation in equation (3); it will not import or apply
-  the hidden-variable inequality or choose the violating directions.
+- Stage 5 added `Bell.Quantum.Basic`, `Pauli`, and `Singlet`, re-exported the
+  stable singlet leaf from `Bell.lean`, and added the non-exported
+  `Bell.Audit.Singlet`. Its explicit Pauli/Kronecker calculation proves equation
+  (3) without importing the hidden-variable inequality. Exact results are in
+  `goal-1/5-SINGLET.md`.
 - For a fixed triple, checked direct algebra shows equation (15) needs perfect
   anticorrelation only at `b`; requiring it at `c` as well would be stronger
   than necessary. The public direct theorem uses this minimal fixed-`b`
@@ -90,9 +93,10 @@ unless their concepts receive independent formal definitions.
   commands are in `goal-1/1-GUARDRAILS.md`.
 - The Lean project is under `formal/`, pinned to Lean `v4.31.0` and mathlib
   commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. Its public `Bell` root
-  re-exports the three hidden-variable modules and the original-inequality
-  leaf. Five non-exported audit leaves cover dependency probes, the local-model
-  API, and the Stage 4 inequality.
+  re-exports the three hidden-variable modules, the original-inequality leaf,
+  and the separate quantum singlet leaf. Six non-exported audit leaves cover
+  dependency probes, the local-model API, the Stage 4 inequality, and the
+  Stage 5 quantum conventions/calculation.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
@@ -110,15 +114,18 @@ unless their concepts receive independent formal definitions.
   range, measurability/integrability, and probability normalization are used.
 - For the relevant fixed settings, Bell's original inequality is
   `|P(a,b) - P(a,c)| <= 1 + P(b,c)`.
-- The spin-singlet prediction is `P_q(a,b) = -(a dot b)` for unit vectors in
-  real three-space.
+- The spin-singlet prediction is now checked as
+  `singletCorrelation a b = -(inner Real a b)` from explicit finite matrices
+  and a normalized state. The algebraic theorem holds for arbitrary real
+  three-vectors; Bell's physical measurement settings are unit vectors.
 - Directions such as `a=e1`, `c=e2`, and
   `b=(e1+e2)/sqrt(2)` give
   `a dot c=0` and `a dot b=b dot c=1/sqrt(2)`, contradicting the inequality.
-- Stages 3-4 now check the structural local-model facts, correlation integral,
+- Stages 3-5 now check the structural local-model facts, correlation integral,
   response-product integrability and range, correlation-`-1` implication,
-  equation (14), and Bell inequality. The singlet formula and geometric
-  contradiction remain planning facts until their later stages compile.
+  equation (14), Bell inequality, Pauli/involution properties, singlet
+  normalization, and equation (3). The geometric contradiction remains a
+  planning fact until Stage 6 compiles.
 
 ### Assumptions and open design hypotheses
 
@@ -131,17 +138,16 @@ unless their concepts receive independent formal definitions.
 - Measurement-setting independence is represented by one fixed
   stored measure for every pair of settings. If conditional/distribution-valued
   models are later added, independence must become an explicit property.
-- Measurement settings for the abstract inequality should remain polymorphic.
-  The quantum layer will specialize to unit vectors in `EuclideanSpace R (Fin 3)`
-  or an equivalent mathlib type.
-- The quantum layer will initially use complex functions and matrices indexed
-  by `Fin 2` and `Fin 2 × Fin 2`, with matrix Kronecker products. Algebraic
-  `TensorProduct` is available but adds quotient/basis transport that does not
-  help the intended coordinate calculation.
-- The quantum calculation should derive the correlation from explicit Pauli
-  observables and a singlet vector/density matrix, not define the quantum model
-  to have the desired correlation. The most stable mathlib representation must
-  be discovered before committing to an API.
+- Measurement settings for the abstract inequality remain polymorphic. The
+  quantum layer now uses `Direction = EuclideanSpace Real (Fin 3)`; unit length
+  is kept outside the raw type and will be proved for Stage 6's concrete
+  vectors.
+- The quantum layer uses complex functions and matrices indexed by `Fin 2` and
+  `Fin 2 × Fin 2`, with ordered matrix Kronecker products. Algebraic
+  `TensorProduct` remains unnecessary for the coordinate calculation.
+- `singletCorrelation` is the real part of a separately defined matrix
+  expectation. The formula `-inner Real a b` appears only in proved theorems,
+  not in the definition or a premise.
 - Bell's smearing argument may be best factored through a more general robust
   inequality for responses in `[-1,1]`, followed by an optional angular-average
   instantiation.
@@ -180,7 +186,7 @@ The original objective is complete only when all of the following hold:
 |---|---|---|
 | Sec. II, (1), p. 196 | Deterministic binary responses `A(a,lambda)`, `B(b,lambda)` | Stage 3: `DeterministicLocalModel`, `IsBinaryValued`, `AliceBinary`, `BobBinary`; locality visible in response arity |
 | Sec. II, (2), p. 196; (12), p. 197 | Correlation under normalized `rho` | Stage 3: fixed arbitrary `Measure`, separate `IsProbabilityMeasure`, and Bochner `correlation`; no density required |
-| Sec. II, (3), p. 196 | Singlet correlation `-a dot b` | Derived in a separate quantum module |
+| Sec. II, (3), p. 196 | Singlet correlation `-a dot b` | `singlet_spin_expectation_coordinates`, `singlet_spin_expectation`, and real `singlet_spin_correlation`, derived from explicit Pauli matrices, Kronecker observable, and normalized singlet ket |
 | Sec. III, (4)–(7), p. 196 | Single-particle sign model | Optional example; make sign-zero explicit and replace the globally invalid “rotate towards” instruction by prescribed-angle existence |
 | Sec. III, (8)–(10), p. 197 | Uniform-sphere local example and linear-in-angle correlation | Optional diagnostic/example; verify sphere measure and boundaries; equation (9)'s printed left side is corrected explicitly |
 | Sec. III, (11), p. 197 | Isotropic mixture correlation `-(1/3)a dot b` | Optional quantum example, outside minimum core |
@@ -271,12 +277,20 @@ obligations remain pending.
     direct theorem uses this weaker premise, and the diagonal corollary assumes
     only `P(b,b) = -1`. This is a checked assumption minimization, not a change
     to the inequality's conclusion.
+19. **Equation (3) separates an algebraic identity from physical unit
+    directions.** Bell uses dimensionless Pauli spin components and unit
+    measurement vectors. The checked matrix identity
+    `singletCorrelation a b = -inner Real a b` is homogeneous and holds for
+    arbitrary real three-vectors. Unit length is needed to obtain
+    `(spinObservable a)^2 = I` and hence the `±1` measurement interpretation,
+    not to prove the correlation polynomial. The library exposes the stronger
+    algebraic theorem and keeps unit hypotheses for physical instantiations.
 
 ## Dependency and Module Notes
 
-Stage 2 compiled the selected APIs under Lean `v4.31.0` and exact mathlib
-commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. The retained diagnostic
-leaves are:
+The project uses Lean `v4.31.0` and exact mathlib commit
+`fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. The retained diagnostic leaves
+now include:
 
 - `Bell.Audit.ProbabilityApi`, using probability-measure and Bochner-integral
   APIs, including a.e. conjunction and integral congruence;
@@ -284,9 +298,15 @@ leaves are:
   vectors, finite inner-product sums, norms, and `Real.sqrt`;
 - `Bell.Audit.QuantumApi`, using finite complex kets/matrices, conjugate
   transpose, Hermitian predicates, trace, matrix Kronecker products, and a raw
-  pure-state expectation.
+  pure-state expectation;
+- `Bell.Audit.LocalModel` and `Bell.Audit.OriginalInequality`, covering the
+  general hidden-variable API, finite models, null exceptions, and abstract
+  Bell bound; and
+- `Bell.Audit.Singlet`, covering state coordinates, normalization, Pauli
+  handedness, genuine complex conjugation, tensor order, direct axis
+  correlations, and Stage 5 axiom output.
 
-Relevant mathlib areas for later implementation include:
+Relevant mathlib areas used or retained for later implementation include:
 
 - `Mathlib/MeasureTheory/Measure/ProbabilityMeasure` and integration APIs for
   probability normalization, a.e. reasoning, and bounded integrability;
@@ -309,6 +329,7 @@ Bell/
   HiddenVariable/PerfectAnticorrelation.lean
   Inequality/Original.lean
   Inequality/Robust.lean
+  Quantum/Basic.lean
   Quantum/Pauli.lean
   Quantum/Singlet.lean
   Geometry/Violation.lean
@@ -325,8 +346,8 @@ public surface.
 
 ## Proposed Declaration Outline
 
-Names and exact signatures are provisional and must be checked against mathlib
-conventions before implementation.
+Implemented declarations below are labeled by stage; later names and exact
+signatures remain provisional until checked against mathlib conventions.
 
 - `IsBinaryOutcome`, `IsBinaryValued`, and `IsAEBinaryValued`: actual Stage 3
   declarations for one value, pointwise range, and a.e. range.
@@ -350,10 +371,19 @@ conventions before implementation.
   deriving the fixed-`b` relation from `P(b,b) = -1`.
 - `bell_original_finite`: optional finite/discrete specialization used as an
   explanatory bridge, not the final general result.
-- `pauli`, `spinObservable`, `singletState`, `quantumExpectation`: independently
-  defined finite-dimensional quantum objects.
-- `singlet_spin_correlation`: derives expectation
-  `= -(inner a b)` for real unit directions.
+- `QubitKet`, `QubitOperator`, `TwoQubitKet`, `TwoQubitOperator`, `ketInner`,
+  `pureExpectation`, and `IsNormalizedKet`: actual Stage 5 finite coordinate
+  vocabulary.
+- `pauliX`, `pauliY`, `pauliZ`, and `spinObservable`: actual Stage 5 explicit
+  matrices and directional observable; `spinObservable_isHermitian` and the
+  square/involution theorems verify its observable conventions.
+- `singletState`, `twoSpinObservable`, `singletSpinExpectation`, and
+  `singletCorrelation`: actual Stage 5 state, product observable, and computed
+  expectation/correlation definitions.
+- `singlet_spin_expectation_coordinates`, `singlet_spin_expectation`, and
+  `singlet_spin_correlation`: actual Stage 5 derivations of the full complex
+  coordinate expectation and `singletCorrelation a b = -inner Real a b` for
+  arbitrary real three-vectors.
 - `bellDirections`: explicit `a`, `b`, `c` with proved unit norms and dot
   products.
 - `singlet_violates_bell_original`: specializes both theorem layers and closes
@@ -505,7 +535,7 @@ Completion evidence, exact theorem signatures, finite and adversarial models,
 failure-driven corrections, import/quantifier scans, and axiom output are
 recorded in `goal-1/4-BELL-BOUND.md`.
 
-### 5-SINGLET
+### 5-SINGLET — Complete (2026-07-17)
 
 #### Big Picture Objective
 
@@ -533,6 +563,10 @@ objects in a module independent of the hidden-variable inequality.
   unexplained axioms.
 - Focused quantum builds, full build, `#print axioms`, proof-hole scans, and
   `git diff --check` pass.
+
+Completion evidence, exact conventions, declaration inventory, direct basis
+checks, dependency scans, failure-driven corrections, and axiom output are
+recorded in `goal-1/5-SINGLET.md`.
 
 ### 6-VIOLATION
 

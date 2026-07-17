@@ -75,22 +75,42 @@ section DirectAxisCalculations
 
 theorem singlet_xx_direct :
     pureExpectation singletState (pauliX ⊗ₖ pauliX) = -1 := by
-  simp? [pureExpectation, ketInner, singletState, Matrix.mulVec, dotProduct,
-    Fintype.sum_prod_type, Fin.sum_univ_two, pauliX]
+  simp only [pureExpectation, ketInner, dotProduct, Pi.star_apply,
+    singletState, Fin.isValue, RCLike.star_def, Matrix.mulVec, pauliX,
+    Matrix.kroneckerMap_apply, Matrix.of_apply, Matrix.cons_val',
+    Matrix.cons_val_fin_one, mul_ite, mul_neg, mul_zero,
+    Fintype.sum_prod_type, Prod.mk.injEq, Fin.sum_univ_two, zero_ne_one,
+    and_false, ↓reduceIte, and_true, Matrix.cons_val_zero,
+    Matrix.cons_val_one, one_ne_zero, zero_add, add_zero, mul_one, zero_mul,
+    neg_zero, map_zero, Complex.conj_ofReal, one_mul, map_neg, neg_mul]
   rw [← pow_two, singletAmplitude_sq_complex]
   norm_num
 
 theorem singlet_yy_direct :
     pureExpectation singletState (pauliY ⊗ₖ pauliY) = -1 := by
-  simp? [pureExpectation, ketInner, singletState, Matrix.mulVec, dotProduct,
-    Fintype.sum_prod_type, Fin.sum_univ_two, pauliY]
+  simp only [pureExpectation, ketInner, dotProduct, Pi.star_apply,
+    singletState, Fin.isValue, RCLike.star_def, Matrix.mulVec, pauliY,
+    Matrix.kroneckerMap_apply, Matrix.of_apply, Matrix.cons_val',
+    Matrix.cons_val_fin_one, mul_ite, mul_neg, mul_zero,
+    Fintype.sum_prod_type, Prod.mk.injEq, Fin.sum_univ_two, zero_ne_one,
+    and_false, ↓reduceIte, and_true, Matrix.cons_val_zero,
+    Matrix.cons_val_one, one_ne_zero, zero_add, add_zero, neg_mul, zero_mul,
+    neg_zero, map_zero, Complex.conj_ofReal, Complex.I_mul_I, neg_neg,
+    one_mul, map_neg]
   rw [← pow_two, singletAmplitude_sq_complex]
   norm_num
 
 theorem singlet_zz_direct :
     pureExpectation singletState (pauliZ ⊗ₖ pauliZ) = -1 := by
-  simp? [pureExpectation, ketInner, singletState, Matrix.mulVec, dotProduct,
-    Fintype.sum_prod_type, Fin.sum_univ_two, pauliZ]
+  simp only [pureExpectation, ketInner, dotProduct, Pi.star_apply,
+    singletState, Fin.isValue, RCLike.star_def, Matrix.mulVec, pauliZ,
+    Matrix.kroneckerMap_apply, Matrix.of_apply, Matrix.cons_val',
+    Matrix.cons_val_fin_one, mul_ite, mul_neg, mul_zero,
+    Fintype.sum_prod_type, Prod.mk.injEq, Fin.sum_univ_two, zero_ne_one,
+    and_false, ↓reduceIte, and_true, Matrix.cons_val_zero,
+    Matrix.cons_val_one, one_ne_zero, zero_add, add_zero, zero_mul, mul_one,
+    neg_mul, neg_zero, map_zero, Complex.conj_ofReal, one_mul, map_neg,
+    neg_neg]
   rw [← pow_two, singletAmplitude_sq_complex]
   norm_num
 

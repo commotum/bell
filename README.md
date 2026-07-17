@@ -4,9 +4,11 @@ This repository is developing a reusable Lean formalization and audit of
 J. S. Bell's 1964 paper *On the Einstein Podolsky Rosen Paradox*.
 
 The source and dependency guardrails are established. The public abstract layer
-now defines deterministic local hidden-variable models and proves Bell's
-original inequality for an arbitrary probability measure. The quantum
-calculation remains a later, independent stage.
+defines deterministic local hidden-variable models and proves Bell's original
+inequality for an arbitrary probability measure. A separate finite-dimensional
+quantum layer now derives the spin-singlet correlation from explicit matrices
+and a normalized state. The concrete geometric contradiction remains a later
+stage.
 
 ## Public hidden-variable API
 
@@ -33,6 +35,27 @@ measurability, or binary range. A single stored measure represents
 measurement-setting independence for this model class; it has no setting
 argument.
 
+## Public quantum API
+
+The independent `Bell.Quantum` namespace provides:
+
+- basis-indexed one- and two-qubit kets and complex matrices;
+- a conjugated ket inner product and pure-state matrix expectation;
+- explicit Pauli x, y, and z matrices and real directional spin observables;
+- Hermiticity proofs and the identity `(σ·a)² = ‖a‖² I`, with a unit-direction
+  corollary `(σ·a)² = I` certifying the binary spin convention;
+- the explicit singlet ket `(|01⟩ - |10⟩)/sqrt(2)` and its normalization proof;
+- an ordered Kronecker observable acting on the first and second subsystem
+  indices; and
+- `singlet_spin_expectation_coordinates`, `singlet_spin_expectation`, and
+  `singlet_spin_correlation`, deriving the real correlation
+  `singletCorrelation a b = -inner ℝ a b`.
+
+The matrix identity holds for arbitrary real three-vectors. Bell's physical
+measurement settings are unit vectors; unit length is needed for the `±1`
+observable interpretation, not for the correlation polynomial itself. The
+quantum modules import neither the hidden-variable layer nor Bell's inequality.
+
 ## Pinned formal environment
 
 - Lean: `v4.31.0`
@@ -48,6 +71,7 @@ lake exe cache get
 lake build Bell.Audit.ProbabilityApi Bell.Audit.GeometryApi Bell.Audit.QuantumApi
 lake build Bell.Audit.LocalModel
 lake build Bell.Audit.OriginalInequality
+lake build Bell.Audit.Singlet
 lake build
 ```
 
@@ -62,5 +86,10 @@ instances, the fixed-setting null-set behavior, and countermodels showing that
 normalization, binary range, and perfect anticorrelation are substantive
 premises. The direct fixed-triple proof needs anticorrelation only at `b`; the
 diagonal-correlation corollary accordingly assumes only `P(b,b) = -1`.
+
+`Bell.Audit.Singlet` independently checks the four state coordinates,
+normalization, Pauli handedness, complex conjugation in the bra, Kronecker
+subsystem order, all three equal-axis correlations, an orthogonal cross-axis
+correlation, and the axioms of the quantum headline theorems.
 
 The paper transcription and original scan are in [`bell-1964`](bell-1964/).

@@ -88,8 +88,8 @@ theorem spinObservable_mul_self (a : Direction) :
     rw [Complex.I_sq] <;>
     ring
 
-/-- A unit-length directional observable is an involution, giving the usual
-binary `±1` spin spectrum in finite dimension. -/
+/-- A unit-length directional observable is an involution, the algebraic
+certificate used for the binary `±1` spin interpretation. -/
 theorem spinObservable_sq_eq_one_of_inner_self_eq_one (a : Direction)
     (ha : inner ℝ a a = 1) :
     spinObservable a ^ 2 = 1 := by

@@ -136,28 +136,182 @@ lake build
 
 ## Completion Requirements
 
-- [ ] Explicit Pauli matrices and directional spin observables compile and are
+- [x] Explicit Pauli matrices and directional spin observables compile and are
   proved Hermitian under the documented complex convention.
-- [ ] The explicit two-qubit singlet ket has the documented computational-basis
+- [x] The explicit two-qubit singlet ket has the documented computational-basis
   coordinates and is proved normalized.
-- [ ] The tensor subsystem ordering and pure-expectation convention are explicit
+- [x] The tensor subsystem ordering and pure-expectation convention are explicit
   in declarations and verified by basis checks.
-- [ ] A public coordinate theorem derives the full complex expectation for
+- [x] A public coordinate theorem derives the full complex expectation for
   arbitrary real three-vectors from the definitions.
-- [ ] A public `singlet_spin_correlation` theorem rewrites that calculation as
+- [x] A public `singlet_spin_correlation` theorem rewrites that calculation as
   the negative real Euclidean inner product, without assuming unit norms.
-- [ ] Independent x/y/z and cross-axis audit examples validate signs,
+- [x] Independent x/y/z and cross-axis audit examples validate signs,
   conjugation, and basis order.
-- [ ] The quantum implementation imports no hidden-variable inequality or
+- [x] The quantum implementation imports no hidden-variable inequality or
   future geometric-violation module, and the abstract layer remains unchanged.
-- [ ] `#print axioms` for all headline normalization, Hermiticity, and correlation
+- [x] `#print axioms` for all headline normalization, Hermiticity, and correlation
   results reports only understood Lean/mathlib foundations.
-- [ ] Focused quantum/audit builds and the full public build pass.
-- [ ] Proof-hole, target-as-premise, import-boundary, convention, and diff scans
+- [x] Focused quantum/audit builds and the full public build pass.
+- [x] Proof-hole, target-as-premise, import-boundary, convention, and diff scans
   pass.
-- [ ] Exact failures, corrections, declaration mapping, and evidence are
+- [x] Exact failures, corrections, declaration mapping, and evidence are
   recorded here and folded into `goal-1/0-plan.md`.
 
 ## Stage Results
 
-- In progress.
+Stage 5 completed on 2026-07-17. It did not choose Bell-violating directions,
+apply the hidden-variable inequality, or state a physical nonlocality
+conclusion.
+
+### Public quantum API delivered
+
+`Bell.Quantum.Basic` provides the reusable coordinate layer:
+
+- `QubitIndex = Fin 2`, one-qubit kets/operators, and ordered two-qubit
+  kets/operators indexed by `Fin 2 × Fin 2`;
+- `ketInner psi phi = dotProduct (star psi) phi`, conjugate-linear in the first
+  argument;
+- `pureExpectation psi M = ketInner psi (M *ᵥ psi)`; and
+- the separate normalization predicate `IsNormalizedKet`.
+
+`Bell.Quantum.Pauli` provides:
+
+- explicit standard matrices `pauliX`, `pauliY`, and `pauliZ`, with coordinates
+  `0`, `1`, and `2` corresponding to x, y, and z;
+- `Direction = EuclideanSpace Real (Fin 3)` and
+  `spinObservable a = a0 sigmaX + a1 sigmaY + a2 sigmaZ`;
+- Hermiticity of each Pauli matrix and every real directional observable;
+- x/y/z coordinate-axis rewrite theorems; and
+- `spinObservable_mul_self`, proving `(sigma·a)^2` is the coordinate squared
+  length times the identity, plus inner-product and norm-one corollaries giving
+  `(spinObservable a)^2 = I`. This is the checked algebraic certificate for the
+  binary `±1` spin convention; a full spectral-measure API is not claimed.
+
+`Bell.Quantum.Singlet` provides:
+
+- `singletAmplitude = 1 / sqrt(2)` and the explicit state with coordinates
+  `(0, 1/sqrt(2), -1/sqrt(2), 0)` in the ordered basis
+  `|00>, |01>, |10>, |11>`;
+- the four coordinate lemmas and `singletState_normalized`;
+- `twoSpinObservable a b = spinObservable a ⊗ₖ spinObservable b`, with the first
+  matrix acting on the first product index, and its Hermiticity theorem;
+- `singletSpinExpectation`, the raw complex finite-matrix expectation, and
+  `singletCorrelation`, its real part;
+- `singlet_spin_expectation_coordinates`, which expands every finite sum and
+  derives the full complex value
+  `-(a0*b0 + a1*b1 + a2*b2)`;
+- `singlet_spin_expectation`, rewriting that result as the embedded complex
+  value `-(inner Real a b)`; and
+- `singlet_spin_correlation`, proving the real equation
+  `singletCorrelation a b = -inner Real a b`.
+
+The public `Bell` root now re-exports `Bell.Quantum.Singlet`, whose public
+import chain exposes `Pauli` and `Basic`. The root remains an import/documentation
+surface; `Bell.Audit.Singlet` is not exported.
+
+### Mathematical and convention audit
+
+Bell's equation (3) uses dimensionless Pauli components, so no factor of
+`hbar/2` belongs in this correlation. The scanned paper treats `a` and `b` as
+unit measurement directions. Independent algebra and the compiled proof show
+that the matrix identity itself is homogeneous and holds for arbitrary real
+three-vectors. Unit length enters only when interpreting `spinObservable a` as
+a binary spin component; the square-to-identity theorem makes that distinction
+formal. This clarification is correction-log item 19 in `goal-1/0-plan.md`.
+
+The exact conventions checked are:
+
+- `pauliY = [[0,-i],[i,0]]`, so
+  `spinObservable a = [[a2, a0-i*a1], [a0+i*a1, -a2]]`;
+- the product index is `(first subsystem, second subsystem)`, matching
+  mathlib's entry rule
+  `(A ⊗ₖ B) (i,k) (j,l) = A i j * B k l`;
+- the singlet is `(|01> - |10>)/sqrt(2)`; reversing its global sign would not
+  change expectations, but the chosen signs are fixed by coordinate lemmas;
+  and
+- expectations are `sum_i conj(psi_i) (M psi)_i`, not an unconjugated bilinear
+  form.
+
+`Bell.Audit.Singlet` imports only the public `Bell` root plus the tactic needed
+for finite cases. It verifies:
+
+- the arbitrary-vector public theorem signatures and all four state entries;
+- `pauliX * pauliY = i • pauliZ`, which fixes the Pauli-y handedness that
+  equal-axis correlations alone cannot detect;
+- `(pauliX ⊗ₖ pauliZ)|00> = |10>`, distinguishing the first tensor factor from
+  the second;
+- a genuinely complex bra example with value `-i`, detecting omission of
+  conjugation; and
+- direct finite-matrix calculations `XX = YY = ZZ = -1` and `XZ = 0`, without
+  deriving those checks from the headline correlation theorem.
+
+### Build and axiom evidence
+
+The final focused verification command was:
+
+```text
+cd formal
+lake build Bell.Quantum.Basic Bell.Quantum.Pauli Bell.Quantum.Singlet \
+  Bell.Audit.Singlet Bell
+```
+
+It succeeded with 2,547 graph jobs. The audit printed the following exact axiom
+set for Pauli-y Hermiticity, directional Hermiticity, the unit-direction
+involution, singlet normalization, joint Hermiticity, the coordinate
+calculation, the complex inner-product theorem, and the real correlation
+theorem:
+
+```text
+[propext, Classical.choice, Quot.sound]
+```
+
+These are understood Lean/mathlib foundations; no project axiom is used. A
+subsequent default `lake build` succeeded with 2,546 graph jobs.
+
+### Failure-driven corrections
+
+- The first `Bell.Quantum.Basic` skeleton build reported an expected-token
+  error at `M *ᵥ psi`: the notation is scoped even though `Matrix.mulVec` was
+  imported. Opening only the `Matrix` scope fixed the low-level leaf.
+- The first singlet normalization proof stopped at a finite sum over product
+  indices. It now explicitly expands `Fintype.sum_prod_type` and both `Fin 2`
+  sums. A second attempt exposed the distinction between a real amplitude
+  square and its complex coercion; `singletAmplitude_sq_complex` records the
+  exact bridge used by normalization and correlation calculations.
+- The first norm/involution corollary simplification rewrote `inner a a` to a
+  norm equation before exposing its finite coordinate sum. A general
+  two-vector inner-product identity is now specialized to `a,a`, avoiding the
+  invalid simplification path.
+- The first tensor-order audit expanded the Kronecker matrix action but stopped
+  at an inner finite dot product. Adding the explicit `dotProduct` expansion
+  completed all four product-basis cases.
+- Direct audit calculations initially used broad simplification and emitted
+  flexible-tactic warnings. Their final proofs use the exact finite rewrite
+  sets suggested by Lean, so the focused build is warning-free apart from the
+  intentional `#print axioms` informational output.
+
+### Boundary and source scans
+
+- A Lean-source scan over `formal/Bell` found no `sorry`, `admit`, `unsafe`,
+  `native_decide`, project `axiom`, or `opaque` declaration.
+- `Bell.Quantum.Basic` imports only complex/dot-product APIs; `Pauli` imports
+  `Basic` plus Euclidean/Hermitian APIs; `Singlet` imports `Pauli` plus the
+  Kronecker API. No quantum implementation imports the `Bell` umbrella,
+  `Bell.HiddenVariable`, `Bell.Inequality`, `Bell.Geometry`, or an audit leaf.
+- Conversely, no hidden-variable or inequality implementation imports a
+  `Bell.Quantum` module. The two mathematical layers remain independent until
+  the planned Stage 6 consumer.
+- Definition inspection shows `singletCorrelation` is the real part of
+  `pureExpectation` through `singletSpinExpectation`; neither definition
+  contains `inner` or the target formula. The target first appears as a proved
+  conclusion with no hypothesis beyond arbitrary vectors.
+- Unit/norm premises occur only in the Pauli involution corollaries, not in the
+  three arbitrary-vector singlet theorems.
+- `Bell.lean` exports the stable quantum leaf but contains no `Bell.Audit`
+  import.
+- `git diff --check` passed.
+
+The next incomplete stage is `6-VIOLATION`. It should define and prove the
+concrete directions are unit, calculate their exact inner products, and only
+then combine the already independent Bell and singlet theorem layers.

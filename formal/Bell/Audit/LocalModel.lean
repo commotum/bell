@@ -1,7 +1,6 @@
 module
 
-import Bell.HiddenVariable.Correlation
-import Bell.HiddenVariable.PerfectAnticorrelation
+import Bell
 import Mathlib.Data.ENNReal.Inv
 import Mathlib.MeasureTheory.Measure.Dirac
 
@@ -70,11 +69,11 @@ theorem twoPointMeasure_true : twoPointMeasure {true} = (2 : ENNReal)⁻¹ := by
 
 theorem twoPointMeasure_false_pos : 0 < twoPointMeasure {false} := by
   rw [twoPointMeasure_false]
-  positivity
+  exact ENNReal.inv_pos.mpr (by norm_num)
 
 theorem twoPointMeasure_true_pos : 0 < twoPointMeasure {true} := by
   rw [twoPointMeasure_true]
-  positivity
+  exact ENNReal.inv_pos.mpr (by norm_num)
 
 /-- A nonconstant finite model: Bob's response is Alice's opposite at the same
 setting and hidden-variable value. -/

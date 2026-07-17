@@ -3,15 +3,18 @@
 ## Status
 
 - Scaffold created 2026-07-17.
-- Stages 1 (`1-GUARDRAILS`) and 2 (`2-BOOTSTRAP`) completed 2026-07-17;
-  Stage 3 (`3-LOCAL-MODEL`) is next.
+- Stages 1 (`1-GUARDRAILS`), 2 (`2-BOOTSTRAP`), and 3 (`3-LOCAL-MODEL`)
+  completed 2026-07-17; Stage 4 (`4-BELL-BOUND`) is next.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
-- A minimal pinned Lean project and non-exported API probes now compile. No
-  substantive Bell definition or proof has been started.
-- Stage 3 has begun from a clean worktree. Its implementation target is the
-  general measure-theoretic local-model API; no finite/discrete replacement for
-  that API and no Stage 4 inequality is in scope.
+- The pinned project now exports a general-measure deterministic local-model
+  API, correlation, integrability/range theorems, and distinct pointwise/a.e.
+  perfect-anticorrelation predicates. Bell's inequality and all quantum work
+  remain unimplemented.
+- Stage 3 added `Bell.HiddenVariable.Basic`, `Correlation`, and
+  `PerfectAnticorrelation`, all re-exported by `Bell.lean`, plus the non-exported
+  `Bell.Audit.LocalModel` verification leaf. Exact results and audit evidence
+  are in `goal-1/3-LOCAL-MODEL.md`.
 
 ## Big-Picture Objective
 
@@ -71,9 +74,9 @@ unless their concepts receive independent formal definitions.
   correction evidence, quantifier conventions, scope boundaries, and audit
   commands are in `goal-1/1-GUARDRAILS.md`.
 - The Lean project is under `formal/`, pinned to Lean `v4.31.0` and mathlib
-  commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. Its public `Bell` root is
-  intentionally empty, while three non-exported probes compile-check the
-  probability, Euclidean-geometry, and finite complex-matrix APIs.
+  commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. Its public `Bell` root
+  re-exports the three Stage 3 hidden-variable modules. Four non-exported audit
+  leaves cover the original dependency probes and the local-model API.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
@@ -96,18 +99,21 @@ unless their concepts receive independent formal definitions.
 - Directions such as `a=e1`, `c=e2`, and
   `b=(e1+e2)/sqrt(2)` give
   `a dot c=0` and `a dot b=b dot c=1/sqrt(2)`, contradicting the inequality.
-- These are planning facts only; every item must be re-established in checked
-  Lean or explicitly cited prose before it is treated as a project result.
+- Stage 3 now checks the structural local-model facts, the correlation integral,
+  response-product integrability, and its `[-1,1]` bound. The correlation-`-1`
+  implication, Bell inequality, singlet formula, and geometric contradiction
+  remain planning facts until their later stages compile.
 
 ### Assumptions and open design hypotheses
 
-- The general hidden-variable layer will use a measure `mu` with
-  `[IsProbabilityMeasure mu]`; it will not require a density `rho`.
-- Responses will initially be real-valued functions with a separately named
-  binary-range predicate. This keeps the `±1` premise visible and avoids
+- The general hidden-variable layer uses one stored `Measure Omega`, with
+  `[IsProbabilityMeasure model.hiddenMeasure]` kept separate in analytic
+  theorems; it does not require a density `rho`.
+- Responses are real-valued functions with separately named
+  binary-range predicates. This keeps the `±1` premise visible and avoids
   coercion overhead in integrals; a sign type remains a possible later adapter.
-- Measurement-setting independence is provisionally represented by one fixed
-  measure `mu` for every pair of settings. If conditional/distribution-valued
+- Measurement-setting independence is represented by one fixed
+  stored measure for every pair of settings. If conditional/distribution-valued
   models are later added, independence must become an explicit property.
 - Measurement settings for the abstract inequality should remain polymorphic.
   The quantum layer will specialize to unit vectors in `EuclideanSpace R (Fin 3)`
@@ -156,14 +162,14 @@ The original objective is complete only when all of the following hold:
 
 | Paper location | Mathematical content | Planned treatment |
 |---|---|---|
-| Sec. II, (1), p. 196 | Deterministic binary responses `A(a,lambda)`, `B(b,lambda)` | Core types/properties; locality visible in function arity |
-| Sec. II, (2), p. 196; (12), p. 197 | Correlation under normalized `rho` | Probability measure and Bochner/Lebesgue integral; no density required |
+| Sec. II, (1), p. 196 | Deterministic binary responses `A(a,lambda)`, `B(b,lambda)` | Stage 3: `DeterministicLocalModel`, `IsBinaryValued`, `AliceBinary`, `BobBinary`; locality visible in response arity |
+| Sec. II, (2), p. 196; (12), p. 197 | Correlation under normalized `rho` | Stage 3: fixed arbitrary `Measure`, separate `IsProbabilityMeasure`, and Bochner `correlation`; no density required |
 | Sec. II, (3), p. 196 | Singlet correlation `-a dot b` | Derived in a separate quantum module |
 | Sec. III, (4)–(7), p. 196 | Single-particle sign model | Optional example; make sign-zero explicit and replace the globally invalid “rotate towards” instruction by prescribed-angle existence |
 | Sec. III, (8)–(10), p. 197 | Uniform-sphere local example and linear-in-angle correlation | Optional diagnostic/example; verify sphere measure and boundaries; equation (9)'s printed left side is corrected explicitly |
 | Sec. III, (11), p. 197 | Isotropic mixture correlation `-(1/3)a dot b` | Optional quantum example, outside minimum core |
 | Sec. III, final paragraph, p. 197 | Nonlocal construction reproducing the correlation | Documentation or optional countermodel, explicitly nonlocal; same “rotate towards” correction as (6) |
-| Sec. IV, (13), p. 197 | Perfect anticorrelation from correlation `-1` | Separate theorem, setting-wise a.e.; audit null-set quantifiers |
+| Sec. IV, (13), p. 197 | Perfect anticorrelation from correlation `-1` | Stage 3 defines pointwise/fixed-setting a.e. targets; Stage 4 must prove the implication and audit null-set quantifiers |
 | Sec. IV, (14)–(15), pp. 197–198 | Original Bell inequality | Central abstract theorem, independent of quantum mechanics |
 | Sec. IV, (16)–(22), pp. 198–199 | Smoothed uniform non-approximation bound | Later robust theorem; make averaging measures and uniform quantifiers precise |
 | Sec. V, p. 199 | Higher-dimensional embedding/generalization | Later optional generalization after the two-qubit core |
@@ -236,6 +242,11 @@ obligations remain pending.
     some obtuse `theta` (for example `2pi/3`). The optional examples should
     choose a vector having the prescribed angle rather than assert a rotation
     towards the reference vector. The nonlocal illustration repeats the issue.
+17. **A.e. binary range is a documented modern weakening.** Bell's equation (1)
+    is pointwise. The library exposes that exact pointwise predicate and proves
+    it implies the setting-wise a.e. predicate used by the integration theorems.
+    This changes no paper consequence because null-set modifications do not
+    affect the correlation, but the two notions remain distinct in the API.
 
 ## Dependency and Module Notes
 
@@ -293,13 +304,16 @@ public surface.
 Names and exact signatures are provisional and must be checked against mathlib
 conventions before implementation.
 
-- `BinaryValued f`: pointwise or a.e. statement that `f` takes `-1` or `1`.
-- `DeterministicLocalModel SettingA SettingB Omega`: response functions and a
-  fixed hidden-variable measure, with assumptions exposed rather than bundled
-  opaquely.
-- `correlation model a b`: expectation of the product of local responses.
-- `PerfectAnticorrelationAt model s`: setting-wise a.e. equality
-  `A s = -B s` when the setting types agree.
+- `IsBinaryOutcome`, `IsBinaryValued`, and `IsAEBinaryValued`: actual Stage 3
+  declarations for one value, pointwise range, and a.e. range.
+- `DeterministicLocalModel SettingA SettingB Omega`: actual Stage 3 structure
+  with response functions and one fixed hidden-variable measure; normalization,
+  measurability, and binary range are not bundled.
+- `correlation model a b`: actual Stage 3 expectation of the response product.
+- `PointwisePerfectAnticorrelationAt` and `PerfectAnticorrelationAt`: actual
+  Stage 3 pointwise and fixed-setting a.e. equality predicates.
+- `responseProduct_integrable` and `correlation_mem_Icc`: actual Stage 3
+  analytic results under explicit fixed-setting assumptions.
 - `perfectAnticorrelationAt_of_correlation_eq_neg_one`: derives the preceding
   a.e. relation under binary and probability hypotheses.
 - `bell_original`: proves
@@ -394,7 +408,7 @@ for the planned representations.
 Completion evidence, exact pins, representation decisions, build output, and
 audit results are recorded in `goal-1/2-BOOTSTRAP.md`.
 
-### 3-LOCAL-MODEL
+### 3-LOCAL-MODEL — Complete (2026-07-17)
 
 #### Big Picture Objective
 
@@ -425,6 +439,10 @@ without silently bundling logically distinct assumptions.
   checks show the distinction.
 - Focused module builds, `lake build`, proof-hole/axiom scans, and
   `git diff --check` pass.
+
+Completion evidence, public declaration inventory, finite/general examples,
+quantifier audit, build results, and exact axiom output are recorded in
+`goal-1/3-LOCAL-MODEL.md`.
 
 ### 4-BELL-BOUND
 

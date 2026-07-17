@@ -124,28 +124,162 @@ lake build
 
 ## Completion Requirements
 
-- [ ] A fixed-setting theorem derives `PerfectAnticorrelationAt model setting`
+- [x] A fixed-setting theorem derives `PerfectAnticorrelationAt model setting`
   from correlation `-1` with normalization, measurability, and binary hypotheses
   visible separately.
-- [ ] A theorem corresponding to equation (14) rewrites correlation using the
+- [x] A theorem corresponding to equation (14) rewrites correlation using the
   appropriate fixed-setting a.e. anticorrelation premise.
-- [ ] The public direct theorem proves equation (15) from only the relevant
+- [x] The public direct theorem proves equation (15) from only the relevant
   abstract probability/local-response assumptions.
-- [ ] A public corollary proves equation (15) from the one required diagonal
+- [x] A public corollary proves equation (15) from the one required diagonal
   correlation at `b`, deriving rather than assuming anticorrelation.
-- [ ] Every response product/difference used by integral linearity or monotonicity
+- [x] Every response product/difference used by integral linearity or monotonicity
   is proved integrable under explicit hypotheses.
-- [ ] General-measure and finite-model audits exercise the direct theorem,
+- [x] General-measure and finite-model audits exercise the direct theorem,
   bridge, and diagonal-correlation corollary.
-- [ ] Inspection confirms only the required fixed-setting null sets are used and
+- [x] Inspection confirms only the required fixed-setting null sets are used and
   no continuity, quantum, geometric, or uniform premise enters the core.
-- [ ] `#print axioms` for every headline result reports only understood
+- [x] `#print axioms` for every headline result reports only understood
   Lean/mathlib foundations.
-- [ ] Focused theorem/audit builds and the full public build pass.
-- [ ] Proof-hole, import-boundary, hypothesis, quantifier, and diff scans pass.
-- [ ] Exact failures/corrections/evidence are recorded here and folded into
+- [x] Focused theorem/audit builds and the full public build pass.
+- [x] Proof-hole, import-boundary, hypothesis, quantifier, and diff scans pass.
+- [x] Exact failures/corrections/evidence are recorded here and folded into
   `goal-1/0-plan.md`.
 
 ## Stage Results
 
-- In progress.
+Stage 4 completed on 2026-07-17. No quantum calculation, geometric direction,
+or physical interpretation was added.
+
+### Public declarations delivered
+
+- `Bell.HiddenVariable.perfectAnticorrelationAt_of_correlation_eq_neg_one`
+  proves equation (13) at one fixed setting. Its signature separately requires
+  `[IsProbabilityMeasure model.hiddenMeasure]`, Alice/Bob a.e.
+  measurability, Alice/Bob a.e. binary range, and the diagonal correlation
+  equality. The proof integrates the nonnegative defect `A * B + 1`, proves its
+  integral is zero using normalization, obtains defect zero a.e., and closes
+  the binary cases. The conclusion is setting-wise a.e., not pointwise.
+- `Bell.HiddenVariable.correlation_eq_neg_integral_alice_mul_of_perfectAnticorrelationAt`
+  is equation (14). It uses `integral_congr_ae` at the named Bob setting and
+  does not claim a common null set over settings.
+- `Bell.Inequality.bell_original_of_perfectAnticorrelationAt` proves equation
+  (15) for an arbitrary hidden-variable probability measure. The public
+  signature uses only a.e. measurability and binary range for `A(a)`, `A(b)`,
+  and `B(c)`, plus `PerfectAnticorrelationAt model b`. Integrability of the
+  `A(a) * B(b)` product is transferred through its a.e. equality with
+  `-(A(a) * A(b))`; every other integral linearity or monotonicity step has an
+  explicit integrability proof.
+- `Bell.Inequality.bell_original_of_diagonal_correlation_eq_neg_one` derives
+  the preceding fixed-`b` premise from the single equality `P(b,b) = -1` and
+  then invokes the direct theorem. It does not require `P(c,c) = -1`.
+- `Bell.lean` remains a thin re-export surface and now publicly imports only
+  the stable `Bell.Inequality.Original` leaf in addition to the Stage 3 leaves.
+  The audit module is not re-exported.
+
+Paper equations (12)-(15) now map as follows:
+
+| Equation | Lean treatment |
+|---|---|
+| (12) | `[IsProbabilityMeasure model.hiddenMeasure]`; its `measure_univ = 1` fact is used when integrating constants |
+| (13) | `perfectAnticorrelationAt_of_correlation_eq_neg_one` |
+| (14) | `correlation_eq_neg_integral_alice_mul_of_perfectAnticorrelationAt` |
+| (15) | `bell_original_of_perfectAnticorrelationAt` and `bell_original_of_diagonal_correlation_eq_neg_one` |
+
+### Checked mathematical correction
+
+The initial equation-(14)-style proof plan rewrote every correlation into an
+Alice-only integral and therefore assumed perfect anticorrelation at both `b`
+and `c`. Independent pointwise algebra showed that this was stronger than
+necessary. Keeping the `c` response as `B(c)` gives, at the fixed `b` null-set
+intersection,
+
+```text
+|A(a) B(b) - A(a) B(c)| <= 1 + A(b) B(c).
+```
+
+Consequently equation (15) requires perfect anticorrelation only at `b`; the
+final direct theorem and diagonal corollary use that minimized assumption. This
+correction is recorded as item 18 in `goal-1/0-plan.md`.
+
+### Audit evidence
+
+`Bell.Audit.OriginalInequality` is a private diagnostic consumer importing the
+public `Bell` root plus only the ENNReal/Dirac APIs needed for its models. It
+contains:
+
+- arbitrary-setting/arbitrary-measurable-space examples reproducing both
+  public theorem signatures;
+- an equal mixture of two Boolean hidden values and a nonconstant three-setting
+  model with pointwise perfect anticorrelation;
+- checked values `P(a,b)=0`, `P(a,c)=0`, `P(b,b)=-1`, and `P(b,c)=1`;
+- applications of the direct theorem, equation (14), and the
+  diagonal-correlation corollary to that finite model;
+- a strict instance `0 < 2` and a sharp instance `2 = 2`;
+- a Dirac model whose diagonal correlation is `-1` and for which the bridge
+  yields a.e. anticorrelation, while pointwise anticorrelation provably fails at
+  the null hidden value; and
+- three adversarial models. A normalized binary model without anticorrelation,
+  a normalized perfectly anticorrelated model without binary range, and a
+  mass-two binary perfectly anticorrelated model each falsify the displayed
+  inequality. These confirm that the named premises are substantive.
+
+### Build and axiom evidence
+
+The final focused verification command was:
+
+```text
+cd formal
+lake build Bell.HiddenVariable.PerfectAnticorrelation \
+  Bell.Inequality.Original Bell.Audit.OriginalInequality Bell
+```
+
+It succeeded with 2,515 graph jobs. The audit replay printed the following for
+each of the bridge, equation (14), direct inequality, and diagonal corollary:
+
+```text
+[propext, Classical.choice, Quot.sound]
+```
+
+These are understood Lean/mathlib foundations; no project axiom is used. A
+subsequent default `lake build` succeeded with 2,514 graph jobs.
+
+### Failure-driven corrections
+
+- The first focused bridge build failed because a combined four-case
+  `norm_num ... at hzero ⊢` invocation sometimes closed the goal before the
+  trailing target action. The cases that need the zero-defect contradiction
+  are now explicit; the focused bridge build then passed.
+- The first focused inequality build left eight pointwise goals after
+  `simp_all` oriented the anticorrelation equality through the unconstrained
+  expression `B(b)`. The proof now explicitly derives
+  `B(b) = -A(b)` before splitting the three binary responses. The next focused
+  build passed.
+- The stronger initial public theorem requiring anticorrelation at both `b`
+  and `c` was removed before publication after the fixed-`b` mixed-response
+  proof compiled. The plan, record, and theorem documentation were updated to
+  match the checked weaker assumptions.
+
+### Boundary and source scans
+
+- A Lean-source scan over `formal/Bell` found no `sorry`, `admit`, `unsafe`,
+  `native_decide`, project `axiom`, or `opaque` declaration.
+- The corresponding scan including `goal-1` found only the expected guardrail,
+  command-template, and recorded axiom-audit prose; the Lean-source-only scan
+  remained empty.
+- Import inspection found no quantum, matrix, Euclidean, geometry, sphere,
+  averaging, continuity, or topology import in the hidden-variable or original
+  inequality layers. `Bell.Inequality.Original` imports only
+  `Bell.HiddenVariable.PerfectAnticorrelation`.
+- Quantifier scans found no `almost everywhere omega, forall setting`,
+  `ae_all_iff`, or infinite-intersection shortcut. The theorem proof intersects
+  only fixed-setting a.e. facts with `filter_upwards`.
+- Measure-shape inspection still finds exactly the one
+  `hiddenMeasure : Measure Ω` field and no setting-indexed distribution.
+- `Bell.lean` contains no `Bell.Audit` import; the diagnostic examples do not
+  enter the public dependency graph.
+- `git diff --check` passed.
+
+The next incomplete stage is `5-SINGLET`. It should independently define and
+calculate the finite-dimensional singlet correlation without importing the
+Bell inequality into the quantum calculation leaf.

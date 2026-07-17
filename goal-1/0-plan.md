@@ -21,6 +21,10 @@
   leaf from `Bell.lean`, and added the non-exported
   `Bell.Audit.OriginalInequality`. Exact results are in
   `goal-1/4-BELL-BOUND.md`.
+- Stage 5 has begun from the checked Stage 2 finite-matrix and Euclidean API
+  probes. Its scope is only the independent definition and calculation of the
+  two-qubit singlet correlation in equation (3); it will not import or apply
+  the hidden-variable inequality or choose the violating directions.
 - For a fixed triple, checked direct algebra shows equation (15) needs perfect
   anticorrelation only at `b`; requiring it at `c` as well would be stronger
   than necessary. The public direct theorem uses this minimal fixed-`b`

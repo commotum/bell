@@ -3,10 +3,10 @@
 ## Status
 
 - Scaffold created 2026-07-17.
-- All implementation stages are pending.
+- Stage 1 (`1-GUARDRAILS`) completed 2026-07-17; Stage 2 is next.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
-- No substantive Lean definitions or proofs have been started.
+- No Lean toolchain, substantive definition, or proof has been started.
 
 ## Big-Picture Objective
 
@@ -58,15 +58,20 @@ unless their concepts receive independent formal definitions.
 
 ### Repository facts
 
-- The source transcription is `bell-1964/bell-1964.md`; the scan is
-  `bell-1964/bell-1964.pdf`.
-- The repository has no Lean toolchain, Lake package, Lean modules, or existing
-  formalization at scaffold time.
+- The source transcription is `bell-1964/bell-1964.md`; the six-page scan is
+  `bell-1964/bell-1964.pdf` (printed pp. 195–200, with SHA-256 recorded in
+  `goal-1/1-GUARDRAILS.md`).
+- Stage 1 visually checked every page, equations (1)–(22), the intervening core
+  algebra, and Sections V–VI against the scan. Its authoritative source map,
+  correction evidence, quantifier conventions, scope boundaries, and audit
+  commands are in `goal-1/1-GUARDRAILS.md`.
+- The repository still has no Lean toolchain, Lake package, Lean module, or
+  formal theorem.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
-- The scaffold skill requires exactly `0-plan.md`, `0-loop.md`, and
-  `0-prompt.md`; therefore no Lean build files or stage files are created now.
+- Stage 1 repaired the transcription's broken scan links and disclosed its
+  normalization of the printed typo in equation (9).
 
 ### Mathematical facts provisionally accepted for planning
 
@@ -140,22 +145,24 @@ The original objective is complete only when all of the following hold:
 
 | Paper location | Mathematical content | Planned treatment |
 |---|---|---|
-| Sec. II, (1) | Deterministic binary responses `A(a,lambda)`, `B(b,lambda)` | Core types/properties; locality visible in function arity |
-| Sec. II, (2), (12) | Correlation under normalized `rho` | Probability measure and Bochner/Lebesgue integral; no density required |
-| Sec. II, (3) | Singlet correlation `-a dot b` | Derived in a separate quantum module |
-| Sec. III, (4)-(7) | Single-particle sign model | Optional example; formalize only after core, with sign-zero null set explicit |
-| Sec. III, (8)-(10) | Uniform-sphere local example and linear-in-angle correlation | Optional diagnostic/example; verify sphere measure and boundary cases |
-| Sec. III, (11) | Isotropic mixture correlation `-(1/3)a dot b` | Optional quantum example, outside minimum core |
-| Sec. III, final paragraph | Nonlocal construction reproducing the correlation | Documentation or optional countermodel, explicitly nonlocal |
-| Sec. IV, (13) | Perfect anticorrelation from correlation `-1` | Separate theorem, setting-wise a.e.; audit null-set quantifiers |
-| Sec. IV, (14)-(15) | Original Bell inequality | Central abstract theorem, independent of quantum mechanics |
-| Sec. IV, (16)-(22) | Smoothed uniform non-approximation bound | Later robust theorem; make averaging measures and uniform quantifiers precise |
-| Sec. V | Higher-dimensional embedding/generalization | Later optional generalization after the two-qubit core |
-| Sec. VI | Nonlocal influence, instantaneous signaling, Lorentz claim | Prose interpretation only absent additional physical definitions/premises |
+| Sec. II, (1), p. 196 | Deterministic binary responses `A(a,lambda)`, `B(b,lambda)` | Core types/properties; locality visible in function arity |
+| Sec. II, (2), p. 196; (12), p. 197 | Correlation under normalized `rho` | Probability measure and Bochner/Lebesgue integral; no density required |
+| Sec. II, (3), p. 196 | Singlet correlation `-a dot b` | Derived in a separate quantum module |
+| Sec. III, (4)–(7), p. 196 | Single-particle sign model | Optional example; make sign-zero explicit and replace the globally invalid “rotate towards” instruction by prescribed-angle existence |
+| Sec. III, (8)–(10), p. 197 | Uniform-sphere local example and linear-in-angle correlation | Optional diagnostic/example; verify sphere measure and boundaries; equation (9)'s printed left side is corrected explicitly |
+| Sec. III, (11), p. 197 | Isotropic mixture correlation `-(1/3)a dot b` | Optional quantum example, outside minimum core |
+| Sec. III, final paragraph, p. 197 | Nonlocal construction reproducing the correlation | Documentation or optional countermodel, explicitly nonlocal; same “rotate towards” correction as (6) |
+| Sec. IV, (13), p. 197 | Perfect anticorrelation from correlation `-1` | Separate theorem, setting-wise a.e.; audit null-set quantifiers |
+| Sec. IV, (14)–(15), pp. 197–198 | Original Bell inequality | Central abstract theorem, independent of quantum mechanics |
+| Sec. IV, (16)–(22), pp. 198–199 | Smoothed uniform non-approximation bound | Later robust theorem; make averaging measures and uniform quantifiers precise |
+| Sec. V, p. 199 | Higher-dimensional embedding/generalization | Later optional generalization after the two-qubit core |
+| Sec. VI, p. 199 | Nonlocal influence, instantaneous signaling, Lorentz claim | Prose interpretation only absent additional physical definitions/premises |
 
 ## Preliminary Audit and Correction Log
 
-Each entry is provisional until its stage records checked evidence.
+Stage 1 confirmed or refined every entry below against the scan and paper-level
+mathematics. Detailed evidence is in `goal-1/1-GUARDRAILS.md`; formal Lean proof
+obligations remain pending.
 
 1. **Probability distribution versus density.** The notation `rho(lambda)
    d lambda` presumes a density. The reusable theorem should use an arbitrary
@@ -209,6 +216,15 @@ Each entry is provisional until its stage records checked evidence.
     by zero changes their outcome spectrum outside the chosen subspace. The
     state support and exact theorem statement must be explicit if Section V is
     formalized.
+15. **Printed equation (9) has a malformed left side.** The scan prints
+    `B(a,b)` while (1), (2), the right side of (9), and (10) require
+    `B(b,lambda)`. The transcription uses the intended form and now labels the
+    correction explicitly.
+16. **The “rotate towards” prescription fails for obtuse angles.** Equation (6)
+    requires `theta'=(pi/2)(1-cos theta)`, which is greater than `theta` for
+    some obtuse `theta` (for example `2pi/3`). The optional examples should
+    choose a vector having the prescribed angle rather than assert a rotation
+    towards the reference vector. The nonlocal illustration repeats the issue.
 
 ## Tentative Dependency and Module Notes
 
@@ -291,7 +307,7 @@ corrections, optional illustrations, and non-formalized interpretation.
 
 ## Stages
 
-### 1-GUARDRAILS
+### 1-GUARDRAILS — Complete (2026-07-17)
 
 #### Big Picture Objective
 
@@ -320,6 +336,9 @@ audit conventions before writing Lean code.
 - Documentation explicitly states that deterministic local factorization and
   measurement-setting independence are assumptions, not one vague doctrine.
 - `git diff --check` passes and no Lean proof is claimed at this stage.
+
+Completion evidence and exact audit results are recorded in
+`goal-1/1-GUARDRAILS.md`.
 
 ### 2-BOOTSTRAP
 
@@ -558,4 +577,3 @@ complete paper/declaration map and final axiom/correction audit.
   understood foundations.
 - A clean `lake build`, all focused verification, documentation/link checks,
   `git diff --check`, and repository status review pass.
-

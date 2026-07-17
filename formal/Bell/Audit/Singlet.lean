@@ -123,6 +123,7 @@ end DirectAxisCalculations
 
 #print axioms Bell.Quantum.pauliY_isHermitian
 #print axioms Bell.Quantum.spinObservable_isHermitian
+#print axioms Bell.Quantum.spinObservable_sq_eq_norm_sq_smul_one
 #print axioms Bell.Quantum.spinObservable_sq_eq_one_of_norm_eq_one
 #print axioms Bell.Quantum.singletState_normalized
 #print axioms Bell.Quantum.twoSpinObservable_isHermitian

@@ -20,6 +20,11 @@ namespace Bell.Quantum
 /-- Real three-space used for spin measurement directions. -/
 abbrev Direction := EuclideanSpace ℝ (Fin 3)
 
+/-- The real Euclidean inner product is the finite coordinate dot product. -/
+theorem direction_inner_eq_sum (a b : Direction) :
+    inner ℝ a b = ∑ i, a i * b i := by
+  simp [PiLp.inner_apply, mul_comm]
+
 /-- Pauli x matrix in the computational basis. -/
 def pauliX : QubitOperator :=
   !![0, 1; 1, 0]
@@ -88,17 +93,26 @@ theorem spinObservable_mul_self (a : Direction) :
     rw [Complex.I_sq] <;>
     ring
 
+/-- Norm form of the directional Pauli square law. -/
+theorem spinObservable_sq_eq_norm_sq_smul_one (a : Direction) :
+    spinObservable a ^ 2 =
+      ((‖a‖ ^ 2 : ℝ) : ℂ) • (1 : QubitOperator) := by
+  rw [pow_two, spinObservable_mul_self]
+  have hcoord : a 0 * a 0 + a 1 * a 1 + a 2 * a 2 = ‖a‖ ^ 2 := by
+    calc
+      a 0 * a 0 + a 1 * a 1 + a 2 * a 2 = ∑ i, a i * a i := by
+        simp [Fin.sum_univ_three]
+      _ = inner ℝ a a := (direction_inner_eq_sum a a).symm
+      _ = ‖a‖ ^ 2 := real_inner_self_eq_norm_sq a
+  rw [hcoord]
+
 /-- A unit-length directional observable is an involution, the algebraic
 certificate used for the binary `±1` spin interpretation. -/
 theorem spinObservable_sq_eq_one_of_inner_self_eq_one (a : Direction)
     (ha : inner ℝ a a = 1) :
     spinObservable a ^ 2 = 1 := by
   rw [pow_two, spinObservable_mul_self]
-  have hinter_general : ∀ x y : Direction,
-      inner ℝ x y = ∑ i, x i * y i := by
-    intro x y
-    simp [PiLp.inner_apply, mul_comm]
-  have hinter : inner ℝ a a = ∑ i, a i * a i := hinter_general a a
+  have hinter : inner ℝ a a = ∑ i, a i * a i := direction_inner_eq_sum a a
   rw [hinter] at ha
   have hcoord : a 0 * a 0 + a 1 * a 1 + a 2 * a 2 = 1 := by
     simpa [Fin.sum_univ_three] using ha
@@ -107,9 +121,8 @@ theorem spinObservable_sq_eq_one_of_inner_self_eq_one (a : Direction)
 
 theorem spinObservable_sq_eq_one_of_norm_eq_one (a : Direction)
     (ha : ‖a‖ = 1) :
-    spinObservable a ^ 2 = 1 :=
-  spinObservable_sq_eq_one_of_inner_self_eq_one a <| by
-    rw [real_inner_self_eq_norm_sq, ha]
-    norm_num
+    spinObservable a ^ 2 = 1 := by
+  rw [spinObservable_sq_eq_norm_sq_smul_one, ha]
+  norm_num
 
 end Bell.Quantum

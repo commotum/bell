@@ -184,9 +184,10 @@ conclusion.
 - Hermiticity of each Pauli matrix and every real directional observable;
 - x/y/z coordinate-axis rewrite theorems; and
 - `spinObservable_mul_self`, proving `(sigma·a)^2` is the coordinate squared
-  length times the identity, plus inner-product and norm-one corollaries giving
-  `(spinObservable a)^2 = I`. This is the checked algebraic certificate for the
-  binary `±1` spin convention; a full spectral-measure API is not claimed.
+  length times the identity, `spinObservable_sq_eq_norm_sq_smul_one`, and the
+  inner-product/norm-one corollaries giving `(spinObservable a)^2 = I`. This is
+  the checked algebraic certificate for the binary `±1` spin convention; a
+  full spectral-measure API is not claimed.
 
 `Bell.Quantum.Singlet` provides:
 
@@ -257,10 +258,10 @@ lake build Bell.Quantum.Basic Bell.Quantum.Pauli Bell.Quantum.Singlet \
 ```
 
 It succeeded with 2,547 graph jobs. The audit printed the following exact axiom
-set for Pauli-y Hermiticity, directional Hermiticity, the unit-direction
-involution, singlet normalization, joint Hermiticity, the coordinate
-calculation, the complex inner-product theorem, and the real correlation
-theorem:
+set for Pauli-y Hermiticity, directional Hermiticity, the norm-square law, the
+unit-direction involution, singlet normalization, joint Hermiticity, the
+coordinate calculation, the complex inner-product theorem, and the real
+correlation theorem:
 
 ```text
 [propext, Classical.choice, Quot.sound]
@@ -295,6 +296,9 @@ subsequent default `lake build` succeeded with 2,546 graph jobs.
 
 - A Lean-source scan over `formal/Bell` found no `sorry`, `admit`, `unsafe`,
   `native_decide`, project `axiom`, or `opaque` declaration.
+- The broader scan including `goal-1` found only expected guardrail,
+  command-template, and recorded axiom-audit prose; the Lean-source-only scan
+  remained empty.
 - `Bell.Quantum.Basic` imports only complex/dot-product APIs; `Pauli` imports
   `Basic` plus Euclidean/Hermitian APIs; `Singlet` imports `Pauli` plus the
   Kronecker API. No quantum implementation imports the `Bell` umbrella,

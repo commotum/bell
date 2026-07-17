@@ -102,9 +102,8 @@ theorem singlet_spin_expectation (a b : Direction) :
     singletSpinExpectation a b =
       ((-(inner ℝ a b) : ℝ) : ℂ) := by
   rw [singletSpinExpectation]
-  rw [show inner ℝ a b =
-      a 0 * b 0 + a 1 * b 1 + a 2 * b 2 by
-    simp [PiLp.inner_apply, Fin.sum_univ_three, mul_comm]]
+  rw [direction_inner_eq_sum]
+  simp only [Fin.sum_univ_three]
   exact singlet_spin_expectation_coordinates a b
 
 /-- Bell's real-valued singlet correlation `-a · b`. -/

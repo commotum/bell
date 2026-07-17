@@ -3,17 +3,16 @@
 ## Status
 
 - Scaffold created 2026-07-17.
-- Stages 1 (`1-GUARDRAILS`), 2 (`2-BOOTSTRAP`), 3 (`3-LOCAL-MODEL`),
-  4 (`4-BELL-BOUND`), and 5 (`5-SINGLET`) completed 2026-07-17; Stage 6
-  (`6-VIOLATION`) began 2026-07-17 and is in progress.
+- Stages 1 (`1-GUARDRAILS`) through 6 (`6-VIOLATION`) completed
+  2026-07-17; Stage 7 (`7-ROBUSTNESS`) is next.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
 - The pinned project now exports a general-measure deterministic local-model
   API, correlation and range theorems, distinct pointwise/a.e.
   perfect-anticorrelation predicates, the fixed-setting extremal-correlation
-  bridge, equation (14), Bell's original inequality, and the independently
-  calculated finite-dimensional singlet correlation. The concrete geometric
-  contradiction remains unimplemented.
+  bridge, equation (14), Bell's original inequality, correlation-reproduction
+  predicates, the independently calculated finite-dimensional singlet
+  correlation, explicit unit directions, and the finite-setting contradiction.
 - Stage 3 added `Bell.HiddenVariable.Basic`, `Correlation`, and
   `PerfectAnticorrelation`, all re-exported by `Bell.lean`, plus the non-exported
   `Bell.Audit.LocalModel` verification leaf. Exact results and audit evidence
@@ -28,6 +27,12 @@
   `Bell.Audit.Singlet`. Its explicit Pauli/Kronecker calculation proves equation
   (3) without importing the hidden-variable inequality. Exact results are in
   `goal-1/5-SINGLET.md`.
+- Stage 6 added `Bell.HiddenVariable.Reproduction`,
+  `Bell.Geometry.BellDirections`, and `Bell.Geometry.Violation`, re-exported
+  the stable surface from `Bell.lean`, and added the non-exported
+  `Bell.Audit.Violation`. It proves exact unit-vector geometry, the numerical
+  singlet violation, and finite/global correlation non-reproduction theorems.
+  Exact results are in `goal-1/6-VIOLATION.md`.
 - For a fixed triple, checked direct algebra shows equation (15) needs perfect
   anticorrelation only at `b`; requiring it at `c` as well would be stronger
   than necessary. The public direct theorem uses this minimal fixed-`b`
@@ -93,10 +98,11 @@ unless their concepts receive independent formal definitions.
   commands are in `goal-1/1-GUARDRAILS.md`.
 - The Lean project is under `formal/`, pinned to Lean `v4.31.0` and mathlib
   commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. Its public `Bell` root
-  re-exports the three hidden-variable modules, the original-inequality leaf,
-  and the separate quantum singlet leaf. Six non-exported audit leaves cover
-  dependency probes, the local-model API, the Stage 4 inequality, and the
-  Stage 5 quantum conventions/calculation.
+  re-exports four hidden-variable modules, the original-inequality leaf, the
+  separate quantum singlet leaf, and the geometric violation layer. Seven
+  non-exported audit leaves cover dependency probes, the local-model API, the
+  abstract inequality, quantum conventions/calculation, and the concrete
+  violation.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
@@ -118,20 +124,23 @@ unless their concepts receive independent formal definitions.
   `singletCorrelation a b = -(inner Real a b)` from explicit finite matrices
   and a normalized state. The algebraic theorem holds for arbitrary real
   three-vectors; Bell's physical measurement settings are unit vectors.
-- Directions such as `a=e1`, `c=e2`, and
-  `b=(e1+e2)/sqrt(2)` give
-  `a dot c=0` and `a dot b=b dot c=1/sqrt(2)`, contradicting the inequality.
-- At the start of Stage 6, the focused baseline build of
-  `Bell.Inequality.Original`, `Bell.Quantum.Singlet`,
-  `Bell.Audit.GeometryApi`, and `Bell` succeeds under the pinned toolchain.
-  The intended contradiction uses exactly the four singlet correlations at
-  `(a,b)`, `(a,c)`, `(b,c)`, and `(b,b)`; the last derives the fixed-setting
-  perfect anticorrelation needed by the abstract theorem.
-- Stages 3-5 now check the structural local-model facts, correlation integral,
+- `bellA=e0`, `bellC=e1`, and
+  `bellB=(e0+e1)/sqrt(2)` are now proved unit vectors with
+  `bellA dot bellC=0` and
+  `bellA dot bellB=bellB dot bellC=1/sqrt(2)`. Their directional Pauli
+  observables are audited to square to the identity.
+- The calculated singlet values at `(a,b)`, `(a,c)`, `(b,c)`, and `(b,b)` are
+  respectively `-1/sqrt(2)`, `0`, `-1/sqrt(2)`, and `-1`. Equation (15) would
+  require `1/sqrt(2) <= 1-1/sqrt(2)`, while Lean proves the strict reverse.
+- The minimal finite no-go theorem uses only Alice measurability/binary range
+  at `a,b`, Bob measurability/binary range at `b,c`, normalization, and four
+  correlation-reproduction equalities. Reproduction at `(b,b)` derives the
+  fixed-`b` a.e. perfect anticorrelation; no global common null set is formed.
+- Stages 3-6 now check the structural local-model facts, correlation integral,
   response-product integrability and range, correlation-`-1` implication,
   equation (14), Bell inequality, Pauli/involution properties, singlet
-  normalization, and equation (3). The geometric contradiction remains a
-  planning fact until Stage 6 compiles.
+  normalization, equation (3), exact direction geometry, and the concrete
+  contradiction.
 
 ### Assumptions and open design hypotheses
 
@@ -145,8 +154,8 @@ unless their concepts receive independent formal definitions.
   stored measure for every pair of settings. If conditional/distribution-valued
   models are later added, independence must become an explicit property.
 - Measurement settings for the abstract inequality remain polymorphic. The
-  quantum layer now uses `Direction = EuclideanSpace Real (Fin 3)`; unit length
-  is kept outside the raw type and will be proved for Stage 6's concrete
+  quantum layer uses `Direction = EuclideanSpace Real (Fin 3)`; unit length is
+  kept outside the raw type and is proved separately for Stage 6's concrete
   vectors.
 - The quantum layer uses complex functions and matrices indexed by `Fin 2` and
   `Fin 2 × Fin 2`, with ordered matrix Kronecker products. Algebraic
@@ -154,6 +163,9 @@ unless their concepts receive independent formal definitions.
 - `singletCorrelation` is the real part of a separately defined matrix
   expectation. The formula `-inner Real a b` appears only in proved theorems,
   not in the definition or a premise.
+- `ReproducesCorrelationAt` and `ReproducesCorrelation` assert only equality of
+  correlation expectations at one or all setting pairs. They deliberately do
+  not claim reproduction of complete joint laws or all quantum statistics.
 - Bell's smearing argument may be best factored through a more general robust
   inequality for responses in `[-1,1]`, followed by an optional angular-average
   instantiation.

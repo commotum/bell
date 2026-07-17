@@ -68,9 +68,17 @@ theorem bellA_inner_bellB : inner ℝ bellA bellB = bellScale := by
   rw [direction_inner_eq_sum]
   simp [bellA, bellB, bellC]
 
+theorem bellA_inner_bellB_eq_one_div_sqrt_two :
+    inner ℝ bellA bellB = 1 / Real.sqrt 2 := by
+  rw [bellA_inner_bellB, bellScale_eq_one_div_sqrt_two]
+
 theorem bellB_inner_bellC : inner ℝ bellB bellC = bellScale := by
   rw [direction_inner_eq_sum]
   simp [bellA, bellB, bellC]
+
+theorem bellB_inner_bellC_eq_one_div_sqrt_two :
+    inner ℝ bellB bellC = 1 / Real.sqrt 2 := by
+  rw [bellB_inner_bellC, bellScale_eq_one_div_sqrt_two]
 
 theorem bellA_norm : ‖bellA‖ = 1 := by
   simp [bellA]

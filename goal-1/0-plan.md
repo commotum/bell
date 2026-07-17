@@ -203,7 +203,7 @@ The original objective is complete only when all of the following hold:
 | Paper location | Mathematical content | Planned treatment |
 |---|---|---|
 | Sec. II, (1), p. 196 | Deterministic binary responses `A(a,lambda)`, `B(b,lambda)` | Stage 3: `DeterministicLocalModel`, `IsBinaryValued`, `AliceBinary`, `BobBinary`; locality visible in response arity |
-| Sec. II, (2), p. 196; (12), p. 197 | Correlation under normalized `rho` | Stage 3: fixed arbitrary `Measure`, separate `IsProbabilityMeasure`, and Bochner `correlation`; no density required |
+| Sec. II, (2), p. 196; (12), p. 197 | Correlation under normalized `rho` | Stage 3: fixed arbitrary `Measure`, separate `IsProbabilityMeasure`, and Bochner `correlation`; Stage 6: generic `ReproducesCorrelationAt`/`ReproducesCorrelation`; no density required |
 | Sec. II, (3), p. 196 | Singlet correlation `-a dot b` | `singlet_spin_expectation_coordinates`, `singlet_spin_expectation`, and real `singlet_spin_correlation`, derived from explicit Pauli matrices, Kronecker observable, and normalized singlet ket |
 | Sec. III, (4)–(7), p. 196 | Single-particle sign model | Optional example; make sign-zero explicit and replace the globally invalid “rotate towards” instruction by prescribed-angle existence |
 | Sec. III, (8)–(10), p. 197 | Uniform-sphere local example and linear-in-angle correlation | Optional diagnostic/example; verify sphere measure and boundaries; equation (9)'s printed left side is corrected explicitly |
@@ -211,16 +211,18 @@ The original objective is complete only when all of the following hold:
 | Sec. III, final paragraph, p. 197 | Nonlocal construction reproducing the correlation | Documentation or optional countermodel, explicitly nonlocal; same “rotate towards” correction as (6) |
 | Sec. IV, (13), p. 197 | Perfect anticorrelation from correlation `-1` | `perfectAnticorrelationAt_of_correlation_eq_neg_one`, fixed-setting a.e.; audited with a null exception that prevents pointwise strengthening |
 | Sec. IV, (14), p. 197 | Rewrite using perfect anticorrelation | `correlation_eq_neg_integral_alice_mul_of_perfectAnticorrelationAt` |
-| Sec. IV, (15), pp. 197–198 | Original Bell inequality | `bell_original_of_perfectAnticorrelationAt` and the diagonal-correlation corollary; general arbitrary probability measure, no quantum premise |
+| Sec. IV, (15), pp. 197–198 | Original Bell inequality | `bell_original_of_perfectAnticorrelationAt` and the diagonal-correlation corollary; general arbitrary probability measure, no quantum premise. Stage 6 separately gives `singlet_violates_bell_original` and the finite no-model corollary. |
 | Sec. IV, (16)–(22), pp. 198–199 | Smoothed uniform non-approximation bound | Later robust theorem; make averaging measures and uniform quantifiers precise |
+| Example after (22), p. 199 | `a dot c=0`, `a dot b=b dot c=1/sqrt(2)` | `bellA`, `bellB`, `bellC`, their norm/inner-product theorems, and exact singlet values. Stage 6 reuses this later paper example as a modern explicit instantiation of (3)+(15); Stage 7 will reuse it for (22). |
 | Sec. V, p. 199 | Higher-dimensional embedding/generalization | Later optional generalization after the two-qubit core |
 | Sec. VI, p. 199 | Nonlocal influence, instantaneous signaling, Lorentz claim | Prose interpretation only absent additional physical definitions/premises |
 
 ## Preliminary Audit and Correction Log
 
 Stage 1 confirmed or refined every entry below against the scan and paper-level
-mathematics. Detailed evidence is in `goal-1/1-GUARDRAILS.md`; formal Lean proof
-obligations remain pending.
+mathematics. Detailed source evidence is in `goal-1/1-GUARDRAILS.md`; Stages
+3–6 have since discharged the entries belonging to the exact mathematical core,
+while robustness and optional examples remain pending as identified below.
 
 1. **Probability distribution versus density.** The notation `rho(lambda)
    d lambda` presumes a density. The reusable theorem should use an arbitrary
@@ -303,6 +305,19 @@ obligations remain pending.
     `(spinObservable a)^2 = I` and hence the `±1` measurement interpretation,
     not to prove the correlation polynomial. The library exposes the stronger
     algebraic theorem and keeps unit hypotheses for physical instantiations.
+20. **Correlation reproduction is not complete-statistics reproduction.** The
+    Stage 6 predicates equate the model correlation expectation with an
+    arbitrary target at one or all setting pairs. This is exactly what the Bell
+    proof consumes, but it does not by itself equate outcome marginals or joint
+    probability laws. Declarations and documentation therefore say
+    “correlation reproduction,” not “reproduction of all quantum statistics.”
+21. **The explicit direction triple occurs after equation (22).** Bell gives
+    the inner products while evaluating the robustness bound, not as a
+    displayed exact-contradiction step immediately after (15). Reusing the same
+    unit triple to instantiate the independently proved equation (15) and
+    equation (3) is mathematically valid, but the library records it as a
+    modern explicit instantiation rather than a literal transcription of that
+    paragraph.
 
 ## Dependency and Module Notes
 
@@ -322,7 +337,10 @@ now include:
   Bell bound; and
 - `Bell.Audit.Singlet`, covering state coordinates, normalization, Pauli
   handedness, genuine complex conjugation, tensor order, direct axis
-  correlations, and Stage 5 axiom output.
+  correlations, and Stage 5 axiom output; and
+- `Bell.Audit.Violation`, covering concrete coordinates and geometry,
+  unit-observable involutions, exact singlet values, no-model theorem
+  signatures, and Stage 6 axiom output.
 
 Relevant mathlib areas used or retained for later implementation include:
 
@@ -345,11 +363,13 @@ Bell/
   HiddenVariable/Basic.lean
   HiddenVariable/Correlation.lean
   HiddenVariable/PerfectAnticorrelation.lean
+  HiddenVariable/Reproduction.lean
   Inequality/Original.lean
   Inequality/Robust.lean
   Quantum/Basic.lean
   Quantum/Pauli.lean
   Quantum/Singlet.lean
+  Geometry/BellDirections.lean
   Geometry/Violation.lean
   Examples/SphereModel.lean
   PaperMap.lean
@@ -373,6 +393,9 @@ signatures remain provisional until checked against mathlib conventions.
   with response functions and one fixed hidden-variable measure; normalization,
   measurability, and binary range are not bundled.
 - `correlation model a b`: actual Stage 3 expectation of the response product.
+- `ReproducesCorrelationAt` and `ReproducesCorrelation`: actual Stage 6
+  target-agnostic predicates for correlation equality at one or all setting
+  pairs; they import no quantum definition.
 - `PointwisePerfectAnticorrelationAt` and `PerfectAnticorrelationAt`: actual
   Stage 3 pointwise and fixed-setting a.e. equality predicates.
 - `responseProduct_integrable` and `correlation_mem_Icc`: actual Stage 3
@@ -402,10 +425,22 @@ signatures remain provisional until checked against mathlib conventions.
   `singlet_spin_correlation`: actual Stage 5 derivations of the full complex
   coordinate expectation and `singletCorrelation a b = -inner Real a b` for
   arbitrary real three-vectors.
-- `bellDirections`: explicit `a`, `b`, `c` with proved unit norms and dot
-  products.
-- `singlet_violates_bell_original`: specializes both theorem layers and closes
-  the real inequality contradiction.
+- `bellA`, `bellB`, `bellC`, and `bellScale`: actual Stage 6 explicit directions
+  and scale, with proved unit norms, exact dot products, square-root facts, and
+  the strict scalar inequality used by the violation.
+- `singletCorrelation_bellA_bellB`, `singletCorrelation_bellA_bellC`,
+  `singletCorrelation_bellB_bellB`, and
+  `singletCorrelation_bellB_bellC`: actual Stage 6 values derived through the
+  Stage 5 matrix correlation theorem.
+- `singlet_bell_original_strict_violation` and
+  `singlet_violates_bell_original`: actual Stage 6 premise-free numerical
+  reversal and negated equation-(15) bound.
+- `singletCorrelations_incompatible_with_perfectAnticorrelationAt_bellB`:
+  actual Stage 6 direct assumption-separated bridge.
+- `singletCorrelations_incompatible_with_deterministicLocalModel_at_bellDirections`,
+  `no_deterministicLocalModel_reproduces_singletCorrelations_at_bellDirections`,
+  and `no_deterministicLocalModel_reproduces_singletCorrelation`: actual
+  Stage 6 finite and global correlation non-reproduction results.
 - `bounded_response_bell_robust`: robust inequality for responses in `[-1,1]`.
 - `singlet_uniform_error_lower_bound`: derives a numerical uniform error lower
   bound, with every error and quantifier explicit.
@@ -586,7 +621,7 @@ Completion evidence, exact conventions, declaration inventory, direct basis
 checks, dependency scans, failure-driven corrections, and axiom output are
 recorded in `goal-1/5-SINGLET.md`.
 
-### 6-VIOLATION — In progress (2026-07-17)
+### 6-VIOLATION — Complete (2026-07-17)
 
 #### Big Picture Objective
 
@@ -613,6 +648,10 @@ abstract and quantum results into a formal contradiction.
 - No philosophical/signaling conclusion is embedded in either statement.
 - Focused/full builds, `#print axioms`, hole/shortcut scans, and
   `git diff --check` pass.
+
+Completion evidence, exact theorem signatures, assumption-flow audit,
+direction/source clarification, build output, scan classifications, and axiom
+results are recorded in `goal-1/6-VIOLATION.md`.
 
 ### 7-ROBUSTNESS
 

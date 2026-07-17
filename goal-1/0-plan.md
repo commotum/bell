@@ -4,7 +4,7 @@
 
 - Scaffold created 2026-07-17.
 - Stages 1 (`1-GUARDRAILS`) through 6 (`6-VIOLATION`) completed
-  2026-07-17; Stage 7 (`7-ROBUSTNESS`) is next.
+  2026-07-17; Stage 7 (`7-ROBUSTNESS`) began 2026-07-17 and is in progress.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
 - The pinned project now exports a general-measure deterministic local-model
@@ -136,6 +136,12 @@ unless their concepts receive independent formal definitions.
   at `a,b`, Bob measurability/binary range at `b,c`, normalization, and four
   correlation-reproduction equalities. Reproduction at `(b,b)` derives the
   fixed-`b` a.e. perfect anticorrelation; no global common null set is formed.
+- Stage 7 source synchronization confirms that Bell's averaged responses in
+  equations (19)–(20) are real-valued and bounded by one, not binary. Direct
+  algebra for such responses gives the reusable defect inequality
+  `|P(a,b)-P(a,c)| <= 2+P(b,c)+P(b,b)`. Combining four uniform correlation
+  error bounds of radius `eta` with the Stage 6 directions gives the planned
+  quantitative target `4*eta >= sqrt(2)-1`.
 - Stages 3-6 now check the structural local-model facts, correlation integral,
   response-product integrability and range, correlation-`-1` implication,
   equation (14), Bell inequality, Pauli/involution properties, singlet

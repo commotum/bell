@@ -3,10 +3,12 @@
 ## Status
 
 - Scaffold created 2026-07-17.
-- Stage 1 (`1-GUARDRAILS`) completed 2026-07-17; Stage 2 is next.
+- Stages 1 (`1-GUARDRAILS`) and 2 (`2-BOOTSTRAP`) completed 2026-07-17;
+  Stage 3 (`3-LOCAL-MODEL`) is next.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
-- No Lean toolchain, substantive definition, or proof has been started.
+- A minimal pinned Lean project and non-exported API probes now compile. No
+  substantive Bell definition or proof has been started.
 
 ## Big-Picture Objective
 
@@ -65,8 +67,10 @@ unless their concepts receive independent formal definitions.
   algebra, and Sections V–VI against the scan. Its authoritative source map,
   correction evidence, quantifier conventions, scope boundaries, and audit
   commands are in `goal-1/1-GUARDRAILS.md`.
-- The repository still has no Lean toolchain, Lake package, Lean module, or
-  formal theorem.
+- The Lean project is under `formal/`, pinned to Lean `v4.31.0` and mathlib
+  commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. Its public `Bell` root is
+  intentionally empty, while three non-exported probes compile-check the
+  probability, Euclidean-geometry, and finite complex-matrix APIs.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
@@ -94,17 +98,21 @@ unless their concepts receive independent formal definitions.
 
 ### Assumptions and open design hypotheses
 
-- The general hidden-variable layer will probably use a measure `mu` with
-  `[IsProbabilityMeasure mu]`; it should not require a density `rho`.
-- A model may use real-valued measurable response functions plus an explicit
-  binary-range predicate, or a small sign type with a real coercion. This remains
-  an API experiment, not a settled choice.
+- The general hidden-variable layer will use a measure `mu` with
+  `[IsProbabilityMeasure mu]`; it will not require a density `rho`.
+- Responses will initially be real-valued functions with a separately named
+  binary-range predicate. This keeps the `±1` premise visible and avoids
+  coercion overhead in integrals; a sign type remains a possible later adapter.
 - Measurement-setting independence is provisionally represented by one fixed
   measure `mu` for every pair of settings. If conditional/distribution-valued
   models are later added, independence must become an explicit property.
 - Measurement settings for the abstract inequality should remain polymorphic.
   The quantum layer will specialize to unit vectors in `EuclideanSpace R (Fin 3)`
   or an equivalent mathlib type.
+- The quantum layer will initially use complex functions and matrices indexed
+  by `Fin 2` and `Fin 2 × Fin 2`, with matrix Kronecker products. Algebraic
+  `TensorProduct` is available but adds quotient/basis transport that does not
+  help the intended coordinate calculation.
 - The quantum calculation should derive the correlation from explicit Pauli
   observables and a singlet vector/density matrix, not define the quantum model
   to have the desired correlation. The most stable mathlib representation must
@@ -226,15 +234,26 @@ obligations remain pending.
     choose a vector having the prescribed angle rather than assert a rotation
     towards the reference vector. The nonlocal illustration repeats the issue.
 
-## Tentative Dependency and Module Notes
+## Dependency and Module Notes
 
-No Lean build setup is created during scaffolding. Stage 2 will pin versions
-only after checking current compatible APIs. Tentative mathlib areas to inspect:
+Stage 2 compiled the selected APIs under Lean `v4.31.0` and exact mathlib
+commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. The retained diagnostic
+leaves are:
+
+- `Bell.Audit.ProbabilityApi`, using probability-measure and Bochner-integral
+  APIs, including a.e. conjunction and integral congruence;
+- `Bell.Audit.GeometryApi`, using `EuclideanSpace ℝ (Fin 3)`, coordinate
+  vectors, finite inner-product sums, norms, and `Real.sqrt`;
+- `Bell.Audit.QuantumApi`, using finite complex kets/matrices, conjugate
+  transpose, Hermitian predicates, trace, matrix Kronecker products, and a raw
+  pure-state expectation.
+
+Relevant mathlib areas for later implementation include:
 
 - `Mathlib/MeasureTheory/Measure/ProbabilityMeasure` and integration APIs for
   probability normalization, a.e. reasoning, and bounded integrability;
-- `Mathlib/Analysis/InnerProductSpace/EuclideanDist` or related Euclidean-space
-  APIs for real three-vectors, norms, and dot/inner products;
+- `Mathlib/Analysis/InnerProductSpace/PiL2` for real three-vectors, norms, and
+  dot/inner products;
 - `Mathlib/Data/Matrix/*`, complex numbers, conjugate transpose, and finite sums
   for Pauli matrices and expectations;
 - available tensor/Kronecker-product or finite Hilbert-space APIs for two-qubit
@@ -243,7 +262,7 @@ only after checking current compatible APIs. Tentative mathlib areas to inspect:
 - sphere and Haar/surface probability APIs only if the optional examples or
   angular-smearing instantiation justify their dependency cost.
 
-Tentative module layering (names may change after API probes):
+Planned module layering (public names may still change during implementation):
 
 ```text
 Bell/
@@ -340,7 +359,7 @@ audit conventions before writing Lean code.
 Completion evidence and exact audit results are recorded in
 `goal-1/1-GUARDRAILS.md`.
 
-### 2-BOOTSTRAP
+### 2-BOOTSTRAP — Complete (2026-07-17)
 
 #### Big Picture Objective
 
@@ -368,6 +387,9 @@ for the planned representations.
 - The chosen representations keep abstract probability code independent of the
   quantum layer.
 - Proof-hole and project-axiom scans are clean; `git diff --check` passes.
+
+Completion evidence, exact pins, representation decisions, build output, and
+audit results are recorded in `goal-1/2-BOOTSTRAP.md`.
 
 ### 3-LOCAL-MODEL
 

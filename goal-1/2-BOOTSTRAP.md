@@ -96,19 +96,81 @@ Expected files:
 
 ## Completion Requirements
 
-- [ ] `lean --version` and `lake --version` report the pinned toolchain.
-- [ ] `lake-manifest.json` pins mathlib and all transitive packages.
-- [ ] Each probability, geometry, and quantum API probe compiles.
-- [ ] `lake build` succeeds for the minimal public library.
-- [ ] Representation and module-boundary decisions are documented with compiled
+- [x] `lean --version` and `lake --version` report the pinned toolchain.
+- [x] `lake-manifest.json` pins mathlib and all transitive packages.
+- [x] Each probability, geometry, and quantum API probe compiles.
+- [x] `lake build` succeeds for the minimal public library.
+- [x] Representation and module-boundary decisions are documented with compiled
   evidence or an explicit replacement plan.
-- [ ] Public-root and dependency-boundary inspections pass.
-- [ ] Lean scans find no proof holes, project axioms, `unsafe`, or substantive
+- [x] Public-root and dependency-boundary inspections pass.
+- [x] Lean scans find no proof holes, project axioms, `unsafe`, or substantive
   theorem declarations.
-- [ ] `git diff --check` passes.
-- [ ] Exact commands and outcomes are recorded below and folded into
+- [x] `git diff --check` passes.
+- [x] Exact commands and outcomes are recorded below and folded into
   `goal-1/0-plan.md`.
 
 ## Stage Results
 
-- In progress.
+Stage 2 completed on 2026-07-17 without beginning any substantive Bell
+definition or proof.
+
+### Reproducibility and dependency resolution
+
+- `lean --version` reported Lean `4.31.0`, commit
+  `68218e876d2a38b1985b8590fff244a83c321783`.
+- `lake --version` reported Lake `5.0.0-src+68218e8` under Lean `4.31.0`.
+- `formal/lean-toolchain` pins `leanprover/lean4:v4.31.0`.
+- `formal/lakefile.toml` pins mathlib to exact commit
+  `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`; the resolved checkout reports
+  both that HEAD and exact tag `v4.31.0`.
+- `lake update` initially failed because DNS was unavailable in the managed
+  sandbox. The approved network-enabled retry succeeded. `lake exe cache get`
+  then obtained 8,538 cached files.
+- `lake-manifest.json` fixes mathlib plus `plausible`, `LeanSearchClient`,
+  `importGraph`, `proofwidgets`, `aesop`, `Qq`, `batteries`, and `Cli` to exact
+  revisions. Although inherited dependency inputs may name branches, every
+  resolved `rev` in the retained manifest is a commit hash.
+
+### Compile evidence
+
+The first narrow probe build exposed three representation/API details rather
+than a mathematical failure: inner-product notation needs its scoped support,
+matrix Kronecker notation needs the appropriate scope, and an unrestricted
+integral-valued example must be `noncomputable`. The probes were corrected to
+use the pinned APIs and then compiled cleanly.
+
+Final clean verification used:
+
+```text
+cd formal
+lake clean
+lake build Bell.Audit.ProbabilityApi Bell.Audit.GeometryApi Bell.Audit.QuantumApi
+lake build
+```
+
+The explicit probe build succeeded after rebuilding 2,557 jobs from the clean
+package graph. It exercised probability measures, a.e. conjunction and Bochner
+integration; `EuclideanSpace ℝ (Fin 3)`, coordinate vectors, inner products,
+norms and square roots; and complex matrices, pure-state expectations,
+Hermitian predicates, traces, Kronecker products and algebraic tensor-product
+availability. The independent public-root build then succeeded in 3 jobs and
+reported `Built Bell`.
+
+### Boundary and no-cheating audit
+
+- `Bell.lean` has no imports and contains only an empty namespace, so no probe
+  or claimed mathematical result enters the public surface.
+- The probability probe imports only mathlib measure/integration modules; no
+  project geometry or quantum module can enter the abstract layer through it.
+- A scan of every project Lean source found no `sorry`, `admit`, declaration of
+  `axiom`, `unsafe`, `theorem`, `lemma`, or `opaque`. The one diagnostic `def`
+  computes a raw matrix expectation and is neither exported nor a claimed
+  result.
+- No headline theorem exists yet, so `#print axioms` is not applicable at this
+  stage. Later stages must audit every headline result individually.
+- `git diff --check` passed. Repository status was clean after the automatic
+  workspace snapshots.
+
+The `elan show` sandbox-specific crash recorded under Current Facts does not
+affect the pin or build: both direct version commands, the exact toolchain file,
+the resolved mathlib checkout, and the clean builds agree.

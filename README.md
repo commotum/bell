@@ -3,9 +3,29 @@
 This repository is developing a reusable Lean formalization and audit of
 J. S. Bell's 1964 paper *On the Einstein Podolsky Rosen Paradox*.
 
-The current verified project infrastructure is intentionally minimal. The
-mathematical implementation begins only after the source and dependency
-guardrails in [`goal-1`](goal-1/0-plan.md) are established.
+The source and dependency guardrails are established, and the first public
+mathematical layer now defines deterministic local hidden-variable models and
+their correlations. Bell's inequality and the quantum calculation remain later,
+independent stages.
+
+## Public hidden-variable API
+
+The `Bell.HiddenVariable` namespace currently provides:
+
+- `DeterministicLocalModel`, containing one fixed hidden-variable measure and
+  local response functions whose arities exclude the remote setting;
+- pointwise and almost-everywhere binary outcome predicates;
+- separately named Alice/Bob measurability and binary-range assumptions;
+- `correlation`, defined as the integral of the response product;
+- integrability and `[-1, 1]` bounds under explicit normalization,
+  measurability, and binary-range hypotheses;
+- distinct pointwise and setting-wise almost-everywhere perfect
+  anticorrelation predicates.
+
+The raw model deliberately does not bundle probability normalization,
+measurability, or binary range. A single stored measure represents
+measurement-setting independence for this model class; it has no setting
+argument.
 
 ## Pinned formal environment
 
@@ -20,11 +40,13 @@ cd formal
 lake update
 lake exe cache get
 lake build Bell.Audit.ProbabilityApi Bell.Audit.GeometryApi Bell.Audit.QuantumApi
+lake build Bell.Audit.LocalModel
 lake build
 ```
 
-The API probes are diagnostic leaves and are not re-exported by `Bell.lean`.
-Their role is to compile-check the planned probability, Euclidean-geometry, and
-finite-matrix dependencies before substantive definitions are introduced.
+The audit modules are diagnostic leaves and are not re-exported by `Bell.lean`.
+`Bell.Audit.LocalModel` checks a general-measure signature, an equal-weight
+two-point model, exact boundary correlations, a zero-probability exception, and
+the axioms of the Stage 3 headline theorems.
 
 The paper transcription and original scan are in [`bell-1964`](bell-1964/).

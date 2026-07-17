@@ -44,6 +44,9 @@ theorem IsBinaryOutcome.neg_one_le {x : ℝ} (hx : IsBinaryOutcome x) : -1 ≤ x
 theorem IsBinaryOutcome.le_one {x : ℝ} (hx : IsBinaryOutcome x) : x ≤ 1 := by
   rcases hx with rfl | rfl <;> norm_num
 
+theorem IsBinaryOutcome.sq_eq_one {x : ℝ} (hx : IsBinaryOutcome x) : x ^ 2 = 1 := by
+  rcases hx with rfl | rfl <;> norm_num
+
 theorem IsBinaryValued.ae {Ω : Type*} [MeasurableSpace Ω]
     {μ : Measure Ω} {f : Ω → ℝ} (hf : IsBinaryValued f) :
     IsAEBinaryValued μ f :=

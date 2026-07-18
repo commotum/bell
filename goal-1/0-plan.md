@@ -4,7 +4,7 @@
 
 - Scaffold created 2026-07-17.
 - Stages 1 (`1-GUARDRAILS`) through 8 (`8-EXAMPLES`) completed
-  2026-07-17. Stage 9 (`9-RELEASE-AUDIT`) is the next incomplete stage.
+  2026-07-17. Stage 9 (`9-RELEASE-AUDIT`) began 2026-07-17 and is in progress.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
 - The pinned project now exports a general-measure deterministic local-model
@@ -121,6 +121,10 @@ unless their concepts receive independent formal definitions.
   abstract inequalities, quantum conventions/calculation, the concrete
   violations, robustness, and CHSH.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
+- The Stage 9 baseline `cd formal && lake build Bell` succeeds with 2,555 jobs
+  under Lean 4.31.0/Lake 5.0.0. `README.md` is stale through Stage 5, and the
+  planned consolidated `Bell.PaperMap` and `Bell.AxiomAudit` release leaves do
+  not yet exist; these are the first release-audit implementation targets.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
 - Stage 1 repaired the transcription's broken scan links and disclosed its
@@ -888,7 +892,7 @@ Completion evidence, exact theorem signatures, source/API selection, deferment
 obligations, assumption-flow audit, build failures and corrections, scan
 classifications, and axiom output are recorded in `goal-1/8-EXAMPLES.md`.
 
-### 9-RELEASE-AUDIT
+### 9-RELEASE-AUDIT — In progress (began 2026-07-17)
 
 #### Big Picture Objective
 

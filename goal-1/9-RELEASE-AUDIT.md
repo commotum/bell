@@ -29,16 +29,16 @@
 - At the Stage 9 baseline, the master plan contained the full
   equation/correction/deferment map only as development-process documentation;
   a concise compiled release map was still needed beside the Lean library.
-- The repository has no CI workflow. Stage 9 will provide and actually exercise
-  reproducible local commands; adding hosted CI is not required by the current
-  plan.
+- The repository has no CI workflow. At baseline, Stage 9 was planned to provide
+  and actually exercise reproducible local commands; adding hosted CI was not
+  required by the plan.
 - At the Stage 9 baseline, `bell-1964/.DS_Store` was a tracked generated
   desktop-metadata file and no `.DS_Store` ignore rule existed. It needed to be
   removed from the release tree and ignored without touching the paper sources.
 - The root Python/uv starter still contains placeholder metadata and a hello
   program unrelated to the Lean library. Earlier stages explicitly preserved
-  it; Stage 9 will document that separation rather than delete or repurpose it
-  without user authorization.
+  it; the Stage 9 plan was to document that separation rather than delete or
+  repurpose it without user authorization.
 
 ## Updated Assumptions
 
@@ -277,6 +277,116 @@ Stage 9 completed on 2026-07-17.
   decision rather than inventing reuse terms. No hosted CI workflow was added;
   the exercised local clean-checkout commands are the release reproducibility
   procedure required by this stage.
+
+### Exact final command ledger
+
+The focused, adjacent, and full builds were run exactly as follows from
+`formal/`; every command exited zero:
+
+```text
+lake env lean --version
+lake --version
+lake build Bell.PaperMap
+lake build Bell.AxiomAudit
+lake build Bell.PaperMap Bell.AxiomAudit Bell
+lake build Bell.Audit.ProbabilityApi Bell.Audit.GeometryApi Bell.Audit.QuantumApi Bell.Audit.LocalModel Bell.Audit.OriginalInequality Bell.Audit.Singlet Bell.Audit.Violation Bell.Audit.Robust Bell.Audit.CHSH
+lake build
+```
+
+The final source/boundary scans were run from the repository root:
+
+```text
+rg -n --glob '*.lean' '\bsorry\b|\badmit\b|^[[:space:]]*axiom\b|\bunsafe\b|\bopaque\b|\bnative_decide\b' formal/Bell formal/Bell.lean
+rg -n '^public import Bell\.(Audit|PaperMap|AxiomAudit)' formal/Bell.lean
+rg -n '^(public )?import Bell\.(Quantum|Geometry)|^(public )?import Bell$' formal/Bell/HiddenVariable formal/Bell/Inequality formal/Bell/Approximation
+rg -n '^(public )?import Bell\.(HiddenVariable|Inequality|Geometry|Approximation)|^(public )?import Bell$' formal/Bell/Quantum
+rg -n '^(noncomputable )?def singletCorrelation.*inner|singletCorrelation.*:=.*inner|^[[:space:]]*axiom.*singlet' formal/Bell/Quantum formal/Bell/Geometry formal/Bell/Inequality formal/Bell/HiddenVariable
+rg -n 'hiddenMeasure[[:space:]]*:[^\n]*(Setting|→)|hiddenMeasure[[:space:]]*:=[^\n]*(fun|λ)[^\n]*(setting|a|b)' formal/Bell
+rg -n '∀ᵐ[^\n]*∀|iInter|ae_all_iff|Eventually\.all' formal/Bell --glob '!**/Audit/**'
+rg -n 'exact coefficient|optimal coefficient|sharp coefficient' formal/Bell README.md goal-1/0-plan.md goal-1/8-EXAMPLES.md
+git ls-files | rg '(^|/)(\.DS_Store|__pycache__|\.lake|\.venv)(/|$)|\.(olean|ilean|o)$'
+```
+
+Every command in that block exited one with no matches, the expected success
+condition for these negative scans. Positive controls found exactly
+`hiddenMeasure : Measure Ω`, the documented `∀ setting, ∀ᵐ` order, 22 paper
+equation headings, 28 correction entries, and 41 `#print axioms` commands:
+
+```text
+rg -n 'hiddenMeasure : Measure Ω' formal/Bell/HiddenVariable/Basic.lean
+rg -n '∀ setting, ∀ᵐ' formal/Bell/HiddenVariable
+rg -c '^### Equation \([0-9]+\)' formal/Bell/PaperMap.lean
+rg -c '^[0-9]+\.' formal/Bell/PaperMap.lean
+rg -c '^#print axioms' formal/Bell/AxiomAudit.lean
+```
+
+The required goal-folder proof-escape scan was also run:
+
+```text
+rg -n '\bsorry\b|\badmit\b|^[[:space:]]*axiom\b|\bunsafe\b|\bopaque\b|\bnative_decide\b' goal-1
+```
+
+It exited zero only on planning templates, explicit no-cheating guardrails,
+prior scan reports, the Stage 9 command ledger itself, and ordinary prose such
+as “admit averages” or “opaque uniform predicate.” None is a Lean declaration
+or proof escape; the Lean-source-only scan above was empty.
+
+The following documentation searches exited zero only on explicit negative
+guardrails or deferment prose; each hit was inspected and retained:
+
+```text
+rg -n -i 'signaling|superluminal|Lorentz' README.md formal/Bell goal-1/0-plan.md goal-1/9-RELEASE-AUDIT.md
+rg -n -i 'full (quantum )?statistics|all quantum statistics|joint (probability )?law' README.md formal/Bell goal-1/0-plan.md goal-1/9-RELEASE-AUDIT.md
+rg -n -i 'angular|smear|Fubini|Tonelli|post-factorization' README.md formal/Bell/PaperMap.lean formal/Bell/Geometry/RobustViolation.lean goal-1/0-plan.md goal-1/9-RELEASE-AUDIT.md
+```
+
+Markdown links were enumerated with the first command below. Its six link
+occurrences resolve to the five repository files checked with `test -e`; all
+exited zero. The generated-file query had no tracked match, and both final Git
+checks passed:
+
+```text
+rg -n '\[[^]]+\]\([^)]+\)' --glob '*.md' .
+test -e formal/Bell/PaperMap.lean
+test -e bell-1964/bell-1964.md
+test -e bell-1964/bell-1964.pdf
+test -e goal-1/0-plan.md
+test -e goal-1/9-RELEASE-AUDIT.md
+git ls-files --error-unmatch README.md formal/Bell/PaperMap.lean formal/Bell/AxiomAudit.lean goal-1/9-RELEASE-AUDIT.md
+git check-ignore -v bell-1964/.DS_Store
+git diff --check
+git status --short --branch
+```
+
+The final main-worktree status output was only
+`## master...origin/master`, with no changed or untracked path. Ignored local
+development state consisted of `.venv/`, `bell-1964/.DS_Store`, and
+`formal/.lake/`; none is tracked. The tracked-file check printed all four
+release artifacts, and the ignore check identified `.gitignore`'s `.DS_Store`
+rule.
+
+Finally, the tracked-source gate used this detached-worktree sequence:
+
+```text
+git worktree add --detach /tmp/bell-release-audit-final HEAD
+cd /tmp/bell-release-audit-final/formal
+lake env lean --version
+lake --version
+lake exe cache get
+git diff --exit-code -- lake-manifest.json lakefile.toml lean-toolchain
+git -C .lake/packages/mathlib rev-parse HEAD
+lake build Bell.PaperMap Bell.AxiomAudit Bell
+lake build Bell.Audit.ProbabilityApi Bell.Audit.GeometryApi Bell.Audit.QuantumApi Bell.Audit.LocalModel Bell.Audit.OriginalInequality Bell.Audit.Singlet Bell.Audit.Violation Bell.Audit.Robust Bell.Audit.CHSH
+lake build
+git -C /tmp/bell-release-audit-final diff --check
+git -C /tmp/bell-release-audit-final status --short
+git worktree remove /tmp/bell-release-audit-final
+```
+
+The manifest diff and both final worktree checks were empty. The dependency
+revision command printed the exact committed mathlib pin. Under
+`git status --ignored`, the detached tree contained only its expected
+`formal/.lake/` cache.
 
 All Stage 9 requirements are covered. The verified results and exact remaining
 optional work have been folded back into `goal-1/0-plan.md`; there is no next

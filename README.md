@@ -1,6 +1,6 @@
 # Bell 1964 in Lean 4
 
-This repository contains a pinned, reusable Lean 4 formalization and audit of
+This repository contains a pinned, modular Lean 4 formalization and audit of
 J. S. Bell's 1964 paper *On the Einstein Podolsky Rosen Paradox*.
 
 The verified mathematical core separates and then connects:
@@ -19,8 +19,8 @@ It does not formalize Bell's philosophical claims as mathematical conclusions.
 ## What the assumptions mean
 
 The raw structure `Bell.HiddenVariable.DeterministicLocalModel` contains two
-real response functions and one hidden-variable measure. It deliberately does
-not bundle the following assumptions:
+real response functions and one hidden-variable measure. It encodes three
+modeling choices structurally:
 
 - **Deterministic responses:** each response is a function of its local setting
   and the hidden variable.
@@ -28,6 +28,9 @@ not bundle the following assumptions:
   and Bob's has no Alice-setting argument.
 - **Measurement-setting independence for this model class:** the one stored
   hidden-variable measure has no setting argument.
+
+It deliberately leaves the remaining premises separate:
+
 - **Normalization:** supplied separately by
   `[IsProbabilityMeasure model.hiddenMeasure]`.
 - **Binary or bounded outcomes:** expressed by pointwise and setting-wise

@@ -132,9 +132,11 @@ their concepts receive independent formal definitions.
   violations, robustness, and CHSH. The non-exported `Bell.PaperMap` and
   `Bell.AxiomAudit` release leaves compile the source/declaration map and
   consolidate theorem-level axiom output.
-- Every stage specialized the generic workflow in `BUILD-PLAN.md`; its required
-  current-facts, scope, boundary, verification, result, and fold-back sections
-  are present in the stage records.
+- Every stage specialized the generic workflow in `BUILD-PLAN.md` and records
+  the corresponding current facts, scope, boundary checks, verification,
+  results, and fold-back. The later records use the workflow's current headings
+  literally; earlier records provide the same evidence under their original
+  headings.
 - The final detached-checkout verification reports Lean 4.31.0, Lake 5.0.0,
   and the exact pinned mathlib commit. `lake build Bell.PaperMap Bell.AxiomAudit
   Bell` succeeds with 2,557 jobs, all nine audit leaves succeed together with
@@ -254,9 +256,10 @@ including the detached tracked-source build and scan classifications, is in
 
 - A pinned Lean/mathlib package builds from a clean checkout with documented
   commands.
-- Public definitions expose deterministic local responses, a fixed normalized
-  hidden-variable measure, binary outcomes, correlations, perfect
-  anticorrelation, and reproduction predicates without conflating them.
+- Public definitions expose deterministic local responses, a fixed
+  hidden-variable measure, a separate normalization premise, binary outcomes,
+  correlations, perfect anticorrelation, and reproduction predicates without
+  conflating them.
 - A reusable measure-theoretic Bell inequality is proved; any finite/discrete
   version is connected to it or clearly labeled as a preliminary specialization.
 - The singlet correlation is calculated from independently defined
@@ -311,32 +314,33 @@ mathematical core, while optional examples and literal angular averaging remain
 pending as identified below.
 
 1. **Probability distribution versus density.** The notation `rho(lambda)
-   d lambda` presumes a density. The reusable theorem should use an arbitrary
-   probability measure; a density becomes an optional specialization.
+   d lambda` presumes a density. The reusable theorem uses an arbitrary
+   probability measure; a density is only an optional specialization.
 2. **Measurement-setting independence is implicit.** Equation (2) uses the same
-   `rho` for all settings. The library will name this assumption instead of
-   hiding it inside a phrase such as “local realism.”
+   `rho` for all settings. The library exposes this through its one fixed
+   hidden measure instead of hiding it inside a phrase such as “local realism.”
 3. **Determinism is an explicit model assumption.** Bell motivates it using EPR
    perfect predictability and locality, but that prose argument contains
    counterfactual/physical premises not formalized by (1)-(2). The core theorem
    assumes deterministic response functions directly.
-4. **Locality is encoded but should be named.** Separate arities for `A` and `B`
-   rule out remote-setting dependence. This is parameter independence for a
-   deterministic model, not a complete formalization of relativistic locality.
+4. **Locality is encoded by response arity.** Separate arities for `A` and `B`
+   rule out remote-setting dependence, and the API documents that role. This is
+   parameter independence for a deterministic model, not a complete
+   formalization of relativistic locality.
 5. **Almost-everywhere scope.** Equation (13) follows for each fixed setting up
    to a null set. For uncountably many settings this does not give one common
    full-measure set. The Bell proof for a fixed finite tuple can combine the
    finitely many required exceptional sets.
 6. **Equation (13) needs hypotheses.** Deriving anticorrelation from expectation
    `-1` uses binary outcomes, normalization, and measurability/integrability.
-   These will appear in the theorem signature.
+   These appear in the theorem signature.
 7. **Likely prose typo before (15).** “It follows that c is another unit vector”
    should read “If c is another unit vector.” No mathematical content depends on
    the printed wording.
 8. **Stationarity discussion is heuristic as written.** The “in general of
    order” claim assumes regularity/nonconstancy not stated in the paper. The
-   library will rely on the exact finite-setting inequality, not advertise that
-   heuristic as a theorem without precise analytic assumptions.
+   library relies on the exact finite-setting inequality and does not advertise
+   that heuristic as a theorem without precise analytic assumptions.
 9. **Averaging obligations in (16)-(20).** Independent setting averages require
    setting-space probability measures, joint measurability or suitable iterated
    integrability, and a Fubini argument to reach (19). None is explicit in the
@@ -345,7 +349,7 @@ pending as identified below.
     positive obstruction for a particular uniform approximation criterion after
     local independent averaging, with angular averaging error `delta`; it does
     not by itself exclude every pointwise, almost-everywhere, or `L^p` notion of
-    approximation. The formal theorem and documentation will name the topology
+    approximation. The formal theorem and documentation name the topology
     and quantifiers.
 11. **Quantitative conclusion.** Equation (22) with Bell's directions yields
     `epsilon >= (sqrt(2)-1)/4 - delta`, not merely the qualitative phrase

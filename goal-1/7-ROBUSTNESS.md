@@ -83,8 +83,7 @@ literal angular-smearing construction is or is not formalized.
   inequality.
 - Add a target-agnostic uniform-approximation leaf defining a nonnegative
   uniform absolute-error predicate on explicit setting sets for two
-  setting-indexed real
-  functions and proving
+  setting-indexed real functions and proving
   reflexivity/symmetry or triangle-addition only where consumed.
 - Add `Bell.Inequality.Robust` as a theorem leaf importing only abstract
   hidden-variable modules. Prove the bounded-response integral inequality and
@@ -312,9 +311,10 @@ introduced.
 The final Lean proof-hole/escape scan found no `sorry`, `admit`, declaration
 `axiom`, `unsafe`, `opaque`, or `native_decide`. Import-boundary scans found no
 quantum, geometry, or umbrella import in `Bounded`, `Uniform`, or `Robust`.
-The robust leaf contains no binary, perfect-anticorrelation, singlet, quantum,
-or geometry reference. Target-shortcut and physical-interpretation scans had
-no hits. The fixed-measure scan found only the stored measure in
+The robust declarations contain no binary, perfect-anticorrelation, singlet,
+quantum, or geometry premise or identifier. Target-shortcut and
+physical-interpretation scans had no hits. The fixed-measure scan found only
+the stored measure in
 `HiddenVariable.Basic` and ordinary uses of that same measure in the robust
 integrals. The quantifier scan confirms explicit unit-set quantifiers and
 setting-wise a.e. predicates. The only smearing scan hits in Lean are docstrings
@@ -326,7 +326,8 @@ The broader a.e./measure-order scan produced one diagnostic-only hit in
 contains no setting quantifier and is not a common-null-set conversion. The
 goal-folder proof-hole scan hit only guardrail templates, audit-result prose,
 and the English phrase “admit averages”; the Lean-source-only scan was empty.
-The stale-document scan was empty.
+The stale-document scan was empty before its exact command was recorded below;
+its only subsequent hit is that command template itself.
 
 The exact final scan surface was:
 
@@ -336,9 +337,11 @@ rg -n --glob '*.lean' \
   formal/Bell
 rg -n '\bsorry\b|\badmit\b|\baxiom\b|\bunsafe\b|\bopaque\b|\bnative_decide\b' \
   goal-1
-rg -n 'Is(AE)?Binary|PerfectAnticorrelation|singlet|Quantum|Geometry' \
+rg -n 'IsAEBinaryValued|AliceAEBinary|BobAEBinary|AliceBinary|BobBinary|PerfectAnticorrelation' \
   formal/Bell/Inequality/Robust.lean
-rg -n '^import Bell\.(Quantum|Geometry)|^import Bell$' \
+rg -n 'singlet|Quantum|Geometry' \
+  formal/Bell/Inequality/Robust.lean
+rg -n '^(public )?import Bell\.(Quantum|Geometry)|^(public )?import Bell$' \
   formal/Bell/HiddenVariable/Bounded.lean \
   formal/Bell/Approximation/Uniform.lean formal/Bell/Inequality/Robust.lean
 rg -n 'fun .*=> -inner|def .*singlet.*[Cc]orrelation|h[Rr]obust|h[Bb]ell[Ii]nequality' \
@@ -368,12 +371,10 @@ git diff --check
 git status --short
 ```
 
-At the final recorded gate, `git status --short` listed only the expected
-Stage 7 fold-back/doc-clarification paths:
+At the final recorded gate, repository autosave had already captured the Lean
+and plan fold-back; `git status --short` listed only this final Stage 7 record:
 
 ```text
- M formal/Bell/Inequality/Robust.lean
- M goal-1/0-plan.md
  M goal-1/7-ROBUSTNESS.md
 ```
 

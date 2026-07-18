@@ -65,7 +65,7 @@ theorem sharpCHSHModel_correlation (a b : Bool) :
 theorem sharpCHSHModel_chsh :
     chshCombination (correlation sharpCHSHModel)
       false true false true = 2 := by
-  simp [chshCombination, sharpCHSHModel_correlation]
+  norm_num [chshCombination, sharpCHSHModel_correlation]
 
 example :
     |chshCombination (correlation sharpCHSHModel)
@@ -127,7 +127,8 @@ example : 0 < (Real.sqrt 2 - 1) / 2 := by
 #print axioms Bell.Geometry.singlet_chsh_strict_violation
 #print axioms Bell.Geometry.singlet_violates_chsh
 #print axioms Bell.Geometry.singlet_chsh_error_lower_bound_at_directions
-#print axioms Bell.Geometry.singletCorrelations_incompatible_with_boundedLocalModel_at_chshDirections
+#print axioms
+  Bell.Geometry.singletCorrelations_incompatible_with_boundedLocalModel_at_chshDirections
 #print axioms Bell.Geometry.no_boundedLocalModel_reproduces_singletCorrelation_via_chsh
 
 end Bell.Audit.CHSH

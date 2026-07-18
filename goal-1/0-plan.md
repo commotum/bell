@@ -3,10 +3,11 @@
 ## Status
 
 - Scaffold created 2026-07-17.
-- Stages 1 (`1-GUARDRAILS`) through 8 (`8-EXAMPLES`) completed
-  2026-07-17. Stage 9 (`9-RELEASE-AUDIT`) began 2026-07-17 and is in progress.
-- This document is the authoritative strategy, paper map, preliminary correction
-  log, dependency plan, and proposed theorem outline.
+- Stages 1 (`1-GUARDRAILS`) through 9 (`9-RELEASE-AUDIT`) completed
+  2026-07-17. The original `BELL1964` objective and every required release gate
+  are complete; remaining items below are explicitly optional extensions.
+- This document is the authoritative strategy, paper map, correction log,
+  dependency plan, and declaration outline.
 - The pinned project now exports a general-measure deterministic local-model
   API, correlation and range theorems, distinct pointwise/a.e.
   perfect-anticorrelation predicates, the fixed-setting extremal-correlation
@@ -49,6 +50,13 @@
   `(sqrt 2 - 1) / 2`, and finite/global correlation non-reproduction results.
   It labels CHSH as a modern generalization and records exact deferments for the
   paper's optional examples. Exact results are in `goal-1/8-EXAMPLES.md`.
+- Stage 9 added the compiled non-exported release leaves `Bell.PaperMap` and
+  `Bell.AxiomAudit`, rewrote the README to match the public API, removed tracked
+  desktop metadata, tightened narrow scope docstrings, and passed focused,
+  full, all-audit, and detached-clean-checkout builds. The paper map has a
+  separately classified section for each equation (1)–(22), and all 41 release
+  axiom reports contain exactly `propext`, `Classical.choice`, and `Quot.sound`.
+  Exact release evidence is in `goal-1/9-RELEASE-AUDIT.md`.
 - For a fixed triple, checked direct algebra shows equation (15) needs perfect
   anticorrelation only at `b`; requiring it at `c` as well would be stronger
   than necessary. The public direct theorem uses this minimal fixed-`b`
@@ -57,17 +65,19 @@
 
 ## Big-Picture Objective
 
-Turn J. S. Bell's 1964 paper *On the Einstein Podolsky Rosen Paradox* into a
-correct, reusable Lean 4 library. The verified core will separate:
+The completed library turns J. S. Bell's 1964 paper *On the Einstein Podolsky
+Rosen Paradox* into a correct, reusable Lean 4 library. Its verified core
+separates:
 
 1. an abstract Bell inequality for deterministic local hidden-variable models;
 2. a finite-dimensional calculation of the spin-singlet correlation;
 3. an explicit choice of unit measurement directions that violates the bound.
 
-The later library should also formalize Bell's robust non-approximation argument
-if it can be stated cleanly, and selected examples or generalizations when they
-improve the API. Physical and philosophical interpretations will remain prose
-unless their concepts receive independent formal definitions.
+It also formalizes a precise post-factorization version of Bell's robust
+non-approximation argument and a reusable modern CHSH generalization. Optional
+paper examples and the literal angular-smearing construction remain documented
+extensions. Physical and philosophical interpretations remain prose unless
+their concepts receive independent formal definitions.
 
 ## Non-Negotiable Constraints and No-Cheating Rules
 
@@ -117,20 +127,25 @@ unless their concepts receive independent formal definitions.
   re-exports five hidden-variable modules, the target-agnostic uniform-error
   leaf, the original, robust, and CHSH inequality leaves, the separate quantum
   singlet leaf, and the exact, robust, and CHSH geometric integration layers.
-  Nine non-exported audit leaves cover dependency probes, the local-model API, the
-  abstract inequalities, quantum conventions/calculation, the concrete
-  violations, robustness, and CHSH.
-- `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
-- The Stage 9 baseline `cd formal && lake build Bell` succeeds with 2,555 jobs
-  under Lean 4.31.0/Lake 5.0.0. `README.md` is stale through Stage 5, and the
-  planned consolidated `Bell.PaperMap` and `Bell.AxiomAudit` release leaves do
-  not yet exist; these are the first release-audit implementation targets.
+  Nine non-exported audit leaves cover dependency probes, the local-model API,
+  the abstract inequalities, quantum conventions/calculation, the concrete
+  violations, robustness, and CHSH. The non-exported `Bell.PaperMap` and
+  `Bell.AxiomAudit` release leaves compile the source/declaration map and
+  consolidate theorem-level axiom output.
+- Every stage specialized the generic workflow in `BUILD-PLAN.md`; its required
+  current-facts, scope, boundary, verification, result, and fold-back sections
+  are present in the stage records.
+- The final detached-checkout verification reports Lean 4.31.0, Lake 5.0.0,
+  and the exact pinned mathlib commit. `lake build Bell.PaperMap Bell.AxiomAudit
+  Bell` succeeds with 2,557 jobs, all nine audit leaves succeed together with
+  2,573 jobs, and the default `lake build` succeeds with 2,555 jobs. The README
+  and compiled paper/axiom maps agree with that release surface.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
 - Stage 1 repaired the transcription's broken scan links and disclosed its
   normalization of the printed typo in equation (9).
 
-### Mathematical facts provisionally accepted for planning
+### Mathematical facts verified and retained
 
 - Bell's deterministic model uses responses with values in `{−1, +1}` and a
   normalized hidden-variable distribution independent of measurement settings.
@@ -195,7 +210,7 @@ unless their concepts receive independent formal definitions.
   illustrations are explicitly deferred with their additional obligations in
   `goal-1/8-EXAMPLES.md`.
 
-### Assumptions and open design hypotheses
+### Explicit design boundaries and optional extensions
 
 - The general hidden-variable layer uses one stored `Measure Omega`, with
   `[IsProbabilityMeasure model.hiddenMeasure]` kept separate in analytic
@@ -232,7 +247,9 @@ unless their concepts receive independent formal definitions.
 
 ## Success Metrics and Final Verification
 
-The original objective is complete only when all of the following hold:
+All of the following are satisfied. Requirement-by-requirement evidence,
+including the detached tracked-source build and scan classifications, is in
+`goal-1/9-RELEASE-AUDIT.md`:
 
 - A pinned Lean/mathlib package builds from a clean checkout with documented
   commands.
@@ -258,9 +275,9 @@ The original objective is complete only when all of the following hold:
 - `git diff --check` succeeds and the final correction log, dependency notes,
   declaration map, and reproducibility instructions agree with the code.
 
-## Paper Map and Intended Formal Treatment
+## Paper Map and Formal Treatment
 
-| Paper location | Mathematical content | Planned treatment |
+| Paper location | Mathematical content | Formal treatment |
 |---|---|---|
 | Sec. II, (1), p. 196 | Deterministic binary responses `A(a,lambda)`, `B(b,lambda)` | Stage 3: `DeterministicLocalModel`, `IsBinaryValued`, `AliceBinary`, `BobBinary`; locality visible in response arity |
 | Sec. II, (2), p. 196; (12), p. 197 | Correlation under normalized `rho` | Stage 3: fixed arbitrary `Measure`, separate `IsProbabilityMeasure`, and Bochner `correlation`; Stage 6: generic `ReproducesCorrelationAt`/`ReproducesCorrelation`; no density required |
@@ -272,20 +289,23 @@ The original objective is complete only when all of the following hold:
 | Sec. IV, (13), p. 197 | Perfect anticorrelation from correlation `-1` | `perfectAnticorrelationAt_of_correlation_eq_neg_one`, fixed-setting a.e.; audited with a null exception that prevents pointwise strengthening |
 | Sec. IV, (14), p. 197 | Rewrite using perfect anticorrelation | `correlation_eq_neg_integral_alice_mul_of_perfectAnticorrelationAt` |
 | Sec. IV, (15), pp. 197–198 | Original Bell inequality | `bell_original_of_perfectAnticorrelationAt` and the diagonal-correlation corollary; general arbitrary probability measure, no quantum premise. Stage 6 separately gives `singlet_violates_bell_original` and the finite no-model corollary. |
-| Sec. IV, (16)–(17), p. 198 | Local-to-averaged and averaged-to-point singlet uniform errors | Hypotheses `h16` and `h17` use `UniformlyWithinOn unitDirectionSet unitDirectionSet`; the intermediate `averagedTarget` is abstract and represents the averaged quantum correlation |
+| Sec. IV, (16), p. 198 | Local correlation versus an averaged quantum target | Encoded as the explicit uniform hypothesis `h16` over `unitDirectionSet × unitDirectionSet`. The library does not claim to construct Bell's angular average. |
+| Sec. IV, (17), p. 198 | Averaged quantum target versus the point singlet correlation | Encoded as `h17`; `averagedTarget` carries the negative singlet-correlation sign. It is abstract pending the angular-measure construction. |
 | Sec. IV, (18), p. 198 | Addition of the two uniform error radii | `UniformlyWithinOn.trans_add` |
-| Sec. IV, (19)–(20), p. 198 | Factorization through averaged responses bounded by one | `IsBoundedByOne`/`IsAEBoundedByOne`, their setting-wise variants, and `bounded_response_bell_robust` formalize the post-factorization bounded-response argument. A concrete cap-measure construction and Fubini derivation of (19) are explicitly deferred. |
-| Sec. IV, unnumbered robust algebra and (21)–(22), pp. 198–199 | Diagonal defect and quantitative non-approximation bound | `bounded_response_bell_pointwise`, `target_bell_robust_of_four_errors`, `bell1964_four_mul_total_error_lower_bound`, and the two `bell1964_epsilon_*_of_uniform_averaging_errors` conclusions; the role of (21) is incorporated through the `(b,b)` error hypothesis |
+| Sec. IV, (19), p. 198 | Factorization through independently averaged responses | Deferred: a faithful derivation needs center-indexed setting measures, independence from the fixed hidden measure, joint measurability/product integrability, and Fubini/Tonelli. The compiled layer starts after this factorization. |
+| Sec. IV, (20), p. 198 | Averaged responses lie in `[-1,1]` | Represented by `IsBoundedByOne`/`IsAEBoundedByOne` and their setting-wise variants. This is an explicit hypothesis of the post-factorization integral theorem, not a hidden binary assumption. |
+| Sec. IV, (21), p. 198 | Near-anticorrelation on the diagonal | Encoded by the `(b,b)` target-error hypothesis in `target_bell_robust_of_four_errors`; no standalone angular-average theorem is claimed. |
+| Sec. IV, unnumbered robust algebra and (22), pp. 198–199 | Diagonal defect and quantitative non-approximation bound | `bounded_response_bell_pointwise`, `bounded_response_bell_robust`, and `target_bell_robust_of_four_errors` prove the modern general transfer. `bell1964_four_mul_total_error_lower_bound` and the two `bell1964_epsilon_*_of_uniform_averaging_errors` theorems specialize it to Bell's directions and error arithmetic; the general vector form printed in (22) is not separately formalized. |
 | Example after (22), p. 199 | `a dot c=0`, `a dot b=b dot c=1/sqrt(2)` | `bellA`, `bellB`, `bellC`, their norm/inner-product theorems, and exact singlet values. Stage 6 reuses this later paper example as a modern explicit instantiation of (3)+(15); Stage 7 derives the equation-(22) constant in `singlet_four_mul_error_lower_bound_at_bellDirections`, `singlet_error_lower_bound_at_bellDirections`, and `singlet_uniform_error_lower_bound_on_unitDirections`. |
 | Sec. V, p. 199 | Higher-dimensional embedding/generalization | Explicitly deferred in Stage 8. A faithful result needs isometric qubit embeddings, embedded-state support, and support-restricted binary observables: zero extension squares to a subspace projection, not the ambient identity. |
 | Sec. VI, p. 199 | Nonlocal influence, instantaneous signaling, Lorentz claim | Prose interpretation only absent additional physical definitions/premises |
 | Modern generalization (not in Bell 1964) | Bounded-response CHSH inequality and four-direction singlet violation | Stage 8: `bounded_response_chsh`, `target_chsh_of_four_errors`, `singlet_violates_chsh`, `singlet_chsh_error_lower_bound_at_directions`, and finite/global bounded-local-model correlation non-reproduction corollaries. |
 
-## Preliminary Audit and Correction Log
+## Audit and Correction Log
 
 Stage 1 confirmed or refined every entry below against the scan and paper-level
 mathematics. Detailed source evidence is in `goal-1/1-GUARDRAILS.md`; Stages
-3–8 have since discharged the entries belonging to the exact, robust, and CHSH
+3–9 have since discharged the entries belonging to the exact, robust, and CHSH
 mathematical core, while optional examples and literal angular averaging remain
 pending as identified below.
 
@@ -464,6 +484,11 @@ now include:
 - `Bell.Audit.CHSH`, covering a normalized one-point bounded/nonbinary model
   saturating the CHSH bound, a representative Alice binary-to-bounded bridge,
   explicit directions and values, public signatures, and Stage 8 axiom output.
+- `Bell.PaperMap`, a compiled non-exported documentation leaf checking the
+  declaration map for every paper equation and all exact deferments; and
+- `Bell.AxiomAudit`, a compiled non-exported release leaf issuing 41
+  theorem-level axiom reports, all equal to the understood foundation set
+  `[propext, Classical.choice, Quot.sound]`.
 
 Relevant mathlib areas used or retained for later implementation include:
 
@@ -479,7 +504,8 @@ Relevant mathlib areas used or retained for later implementation include:
 - sphere and Haar/surface probability APIs only if the optional examples or
   angular-smearing instantiation justify their dependency cost.
 
-Current implemented layering, with later optional leaves shown explicitly:
+Current implemented layering, with release checks and later optional leaves
+shown explicitly:
 
 ```text
 Bell/
@@ -509,8 +535,8 @@ Bell/
   Audit/Robust.lean                 # diagnostic; not re-exported
   Audit/CHSH.lean                   # diagnostic; not re-exported
   Examples/SphereModel.lean         # explicitly deferred optional leaf
-  PaperMap.lean                     # planned release documentation
-  AxiomAudit.lean                   # planned consolidated release audit
+  PaperMap.lean                     # compiled release documentation/checks
+  AxiomAudit.lean                   # compiled consolidated axiom audit
   Bell.lean
 ```
 
@@ -519,10 +545,10 @@ Euclidean geometry modules. Heavy quantum calculations and optional examples
 should remain leaf modules. The umbrella module should only re-export the stable
 public surface.
 
-## Proposed Declaration Outline
+## Declaration Outline
 
-Implemented declarations below are labeled by stage; later names and exact
-signatures remain provisional until checked against mathlib conventions.
+Every non-deferred declaration below is implemented and checked against the
+pinned mathlib version. Deferred names are labeled explicitly.
 
 - `IsBinaryOutcome`, `IsBinaryValued`, and `IsAEBinaryValued`: actual Stage 3
   declarations for one value, pointwise range, and a.e. range.
@@ -547,8 +573,6 @@ signatures remain provisional until checked against mathlib conventions.
   anticorrelation and fixed-setting analytic hypotheses.
 - `bell_original_of_diagonal_correlation_eq_neg_one`: actual Stage 4 corollary
   deriving the fixed-`b` relation from `P(b,b) = -1`.
-- `bell_original_finite`: optional finite/discrete specialization used as an
-  explanatory bridge, not the final general result.
 - `QubitKet`, `QubitOperator`, `TwoQubitKet`, `TwoQubitOperator`, `ketInner`,
   `pureExpectation`, and `IsNormalizedKet`: actual Stage 5 finite coordinate
   vocabulary.
@@ -618,8 +642,8 @@ signatures remain provisional until checked against mathlib conventions.
   instantiation of Bell's literal averaging construction; no such declaration
   is currently implemented or claimed.
 
-The final `PaperMap` documentation should associate equations (1)-(22) with
-these declarations and distinguish exact matches, modern reformulations,
+The compiled `Bell.PaperMap` documentation associates equations (1)–(22) with
+these declarations and distinguishes exact matches, modern reformulations,
 corrections, optional illustrations, and non-formalized interpretation.
 
 ## Stages
@@ -892,7 +916,7 @@ Completion evidence, exact theorem signatures, source/API selection, deferment
 obligations, assumption-flow audit, build failures and corrections, scan
 classifications, and axiom output are recorded in `goal-1/8-EXAMPLES.md`.
 
-### 9-RELEASE-AUDIT — In progress (began 2026-07-17)
+### 9-RELEASE-AUDIT — Complete (2026-07-17)
 
 #### Big Picture Objective
 
@@ -921,3 +945,8 @@ complete paper/declaration map and final axiom/correction audit.
   understood foundations.
 - A clean `lake build`, all focused verification, documentation/link checks,
   `git diff --check`, and repository status review pass.
+
+Completion evidence, release artifacts, paper-map classifications, exact build
+commands and job counts, boundary-scan classifications, clean-checkout results,
+and the consolidated axiom audit are recorded in
+`goal-1/9-RELEASE-AUDIT.md`.

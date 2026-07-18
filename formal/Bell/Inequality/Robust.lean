@@ -8,9 +8,11 @@ import Mathlib.Tactic.Ring
 /-!
 # Bell's robust bounded-response inequality
 
-This module formalizes the algebraic and measure-theoretic core of Bell's
-equations (19)–(22). Responses need only be bounded by one almost everywhere;
-there is no binary, perfect-anticorrelation, quantum, or geometric premise.
+This module formalizes the post-factorization algebraic and measure-theoretic
+core of Bell's equations (19)–(22). It does not construct the angular averages
+or prove the Fubini factorization in equation (19). Responses need only be
+bounded by one almost everywhere; there is no binary, perfect-anticorrelation,
+quantum, or geometric premise.
 -/
 
 @[expose] public section

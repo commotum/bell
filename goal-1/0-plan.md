@@ -241,8 +241,11 @@ The original objective is complete only when all of the following hold:
 | Sec. IV, (13), p. 197 | Perfect anticorrelation from correlation `-1` | `perfectAnticorrelationAt_of_correlation_eq_neg_one`, fixed-setting a.e.; audited with a null exception that prevents pointwise strengthening |
 | Sec. IV, (14), p. 197 | Rewrite using perfect anticorrelation | `correlation_eq_neg_integral_alice_mul_of_perfectAnticorrelationAt` |
 | Sec. IV, (15), pp. 197–198 | Original Bell inequality | `bell_original_of_perfectAnticorrelationAt` and the diagonal-correlation corollary; general arbitrary probability measure, no quantum premise. Stage 6 separately gives `singlet_violates_bell_original` and the finite no-model corollary. |
-| Sec. IV, (16)–(22), pp. 198–199 | Smoothed uniform non-approximation bound | Later robust theorem; make averaging measures and uniform quantifiers precise |
-| Example after (22), p. 199 | `a dot c=0`, `a dot b=b dot c=1/sqrt(2)` | `bellA`, `bellB`, `bellC`, their norm/inner-product theorems, and exact singlet values. Stage 6 reuses this later paper example as a modern explicit instantiation of (3)+(15); Stage 7 will reuse it for (22). |
+| Sec. IV, (16)–(17), p. 198 | Local-to-averaged and averaged-to-point singlet uniform errors | Hypotheses `h16` and `h17` use `UniformlyWithinOn unitDirectionSet unitDirectionSet`; the intermediate `averagedTarget` is abstract and represents the averaged quantum correlation |
+| Sec. IV, (18), p. 198 | Addition of the two uniform error radii | `UniformlyWithinOn.trans_add` |
+| Sec. IV, (19)–(20), p. 198 | Factorization through averaged responses bounded by one | `IsBoundedByOne`/`IsAEBoundedByOne`, their setting-wise variants, and `bounded_response_bell_robust` formalize the post-factorization bounded-response argument. A concrete cap-measure construction and Fubini derivation of (19) are explicitly deferred. |
+| Sec. IV, unnumbered robust algebra and (21)–(22), pp. 198–199 | Diagonal defect and quantitative non-approximation bound | `bounded_response_bell_pointwise`, `target_bell_robust_of_four_errors`, `bell1964_four_mul_total_error_lower_bound`, and the two `bell1964_epsilon_*_of_uniform_averaging_errors` conclusions; the role of (21) is incorporated through the `(b,b)` error hypothesis |
+| Example after (22), p. 199 | `a dot c=0`, `a dot b=b dot c=1/sqrt(2)` | `bellA`, `bellB`, `bellC`, their norm/inner-product theorems, and exact singlet values. Stage 6 reuses this later paper example as a modern explicit instantiation of (3)+(15); Stage 7 derives the equation-(22) constant in `singlet_four_mul_error_lower_bound_at_bellDirections`, `singlet_error_lower_bound_at_bellDirections`, and `singlet_uniform_error_lower_bound_on_unitDirections`. |
 | Sec. V, p. 199 | Higher-dimensional embedding/generalization | Later optional generalization after the two-qubit core |
 | Sec. VI, p. 199 | Nonlocal influence, instantaneous signaling, Lorentz claim | Prose interpretation only absent additional physical definitions/premises |
 
@@ -250,8 +253,9 @@ The original objective is complete only when all of the following hold:
 
 Stage 1 confirmed or refined every entry below against the scan and paper-level
 mathematics. Detailed source evidence is in `goal-1/1-GUARDRAILS.md`; Stages
-3–6 have since discharged the entries belonging to the exact mathematical core,
-while robustness and optional examples remain pending as identified below.
+3–7 have since discharged the entries belonging to the exact and robust
+mathematical core, while optional examples and literal angular averaging remain
+pending as identified below.
 
 1. **Probability distribution versus density.** The notation `rho(lambda)
    d lambda` presumes a density. The reusable theorem should use an arbitrary
@@ -347,6 +351,34 @@ while robustness and optional examples remain pending as identified below.
     equation (3) is mathematically valid, but the library records it as a
     modern explicit instantiation rather than a literal transcription of that
     paragraph.
+22. **Averaged responses are bounded, not binary.** Equations (19)–(20)
+    generally produce values in `[-1,1]`, so equation (15) cannot simply be
+    reused after averaging. The checked pointwise algebra retains the essential
+    diagonal-defect term and proves
+    `|P(a,b)-P(a,c)| <= 2+P(b,c)+P(b,b)` without perfect anticorrelation. The
+    compiled theorem permits setting-wise a.e. bounds, a sufficient modern
+    weakening of Bell's displayed pointwise equation (20).
+23. **Uniform settings must be physically scoped.** The library's `Direction`
+    type is all of real three-space and the algebraic singlet correlation is
+    unbounded there. Bell's uniform comparison concerns measurement
+    directions, so the Stage 7 theorem quantifies over `unitDirectionSet`
+    through `UniformlyWithinOn`, rather than silently claiming a bound on all
+    ambient vectors.
+24. **Angular weights and isolated exceptions are underspecified.** Bell gives
+    angular neighborhoods but no unique probability weights. A literal
+    equation-(19) theorem needs center-indexed normalized local setting
+    measures, their independent product and independence from the one fixed
+    hidden measure, joint measurability or product integrability, and
+    Fubini/Tonelli. Arbitrary cap-supported measures may be Dirac; removing
+    isolated failures additionally requires atomlessness or suitable surface
+    absolute continuity. Stage 7 therefore proves the clean post-factorization
+    obstruction and records the concrete smearing construction as deferred.
+25. **The averaged target carries the singlet sign.** In the Stage 7
+    `epsilon`/`delta` theorems, `averagedTarget` denotes the averaged quantum
+    correlation—under Bell's convention, the negative averaged dot product.
+    It must not be read as the positive averaged dot product. The theorem is
+    uniform pointwise in unit settings and makes no `L^p`, setting-a.e., or
+    arbitrary-topology claim.
 
 ## Dependency and Module Notes
 
@@ -369,7 +401,10 @@ now include:
   correlations, and Stage 5 axiom output; and
 - `Bell.Audit.Violation`, covering concrete coordinates and geometry,
   unit-observable involutions, exact singlet values, no-model theorem
-  signatures, and Stage 6 axiom output.
+  signatures, and Stage 6 axiom output; and
+- `Bell.Audit.Robust`, covering a genuinely nonbinary bounded model, sharp
+  robust algebra, uniform-error composition, unit-setting domains, public
+  signatures, and Stage 7 axiom output.
 
 Relevant mathlib areas used or retained for later implementation include:
 
@@ -385,7 +420,7 @@ Relevant mathlib areas used or retained for later implementation include:
 - sphere and Haar/surface probability APIs only if the optional examples or
   angular-smearing instantiation justify their dependency cost.
 
-Planned module layering (public names may still change during implementation):
+Current implemented layering, with later optional leaves shown explicitly:
 
 ```text
 Bell/
@@ -393,6 +428,8 @@ Bell/
   HiddenVariable/Correlation.lean
   HiddenVariable/PerfectAnticorrelation.lean
   HiddenVariable/Reproduction.lean
+  HiddenVariable/Bounded.lean
+  Approximation/Uniform.lean
   Inequality/Original.lean
   Inequality/Robust.lean
   Quantum/Basic.lean
@@ -400,9 +437,11 @@ Bell/
   Quantum/Singlet.lean
   Geometry/BellDirections.lean
   Geometry/Violation.lean
-  Examples/SphereModel.lean
-  PaperMap.lean
-  AxiomAudit.lean
+  Geometry/RobustViolation.lean
+  Audit/Robust.lean                 # diagnostic; not re-exported
+  Examples/SphereModel.lean         # optional, not yet implemented
+  PaperMap.lean                     # planned release documentation
+  AxiomAudit.lean                   # planned consolidated release audit
   Bell.lean
 ```
 
@@ -470,13 +509,30 @@ signatures remain provisional until checked against mathlib conventions.
   `no_deterministicLocalModel_reproduces_singletCorrelations_at_bellDirections`,
   and `no_deterministicLocalModel_reproduces_singletCorrelation`: actual
   Stage 6 finite and global correlation non-reproduction results.
-- `bounded_response_bell_robust`: robust inequality for responses in `[-1,1]`.
-- `singlet_uniform_error_lower_bound`: derives a numerical uniform error lower
-  bound, with every error and quantifier explicit.
+- `IsBoundedByOne`, `IsAEBoundedByOne`, their Alice/Bob setting-wise variants,
+  and binary-to-bounded bridges: actual Stage 7 bounded effective-response API.
+- `boundedProduct_integrable`, `bounded_response_bell_pointwise`, and
+  `bounded_response_bell_robust`: actual Stage 7 integrability, scalar, and
+  arbitrary-probability-measure robust inequalities for responses bounded by
+  one.
+- `UniformlyWithinOn` and `UniformlyWithinOn.trans_add`: actual Stage 7 uniform
+  absolute-error predicate on explicit setting domains and exact radius
+  addition.
+- `target_bell_robust_of_four_errors`: actual Stage 7 target-agnostic transfer
+  from four fixed errors to the coefficient `4*eta`.
+- `unitDirectionSet`, `singlet_uniform_error_constant_pos`,
+  `singlet_four_mul_error_lower_bound_at_bellDirections`,
+  `singlet_error_lower_bound_at_bellDirections`, and
+  `singlet_uniform_error_lower_bound_on_unitDirections`: actual Stage 7
+  physical-domain and numerical singlet lower bounds.
+- `bell1964_four_mul_total_error_lower_bound`,
+  `bell1964_epsilon_lower_bound_of_uniform_averaging_errors`, and
+  `bell1964_epsilon_pos_of_uniform_averaging_errors`: actual Stage 7 abstract
+  equation-(16)–(22) triangle, solved lower bound, and positivity result.
 - `angular_average_factorization` and
-  `bell1964_smoothed_nonapproximation`: optional instantiation of Bell's precise
-  averaging construction once measurability and sphere-neighborhood APIs are
-  settled.
+  `bell1964_smoothed_nonapproximation`: deferred names for a possible optional
+  instantiation of Bell's literal averaging construction; no such declaration
+  is currently implemented or claimed.
 
 The final `PaperMap` documentation should associate equations (1)-(22) with
 these declarations and distinguish exact matches, modern reformulations,
@@ -682,7 +738,7 @@ Completion evidence, exact theorem signatures, assumption-flow audit,
 direction/source clarification, build output, scan classifications, and axiom
 results are recorded in `goal-1/6-VIOLATION.md`.
 
-### 7-ROBUSTNESS
+### 7-ROBUSTNESS — Complete (2026-07-17)
 
 #### Big Picture Objective
 
@@ -715,6 +771,10 @@ with a precise approximation notion and all averaging hypotheses exposed.
 - Documentation does not generalize the result to unsupported approximation
   topologies.
 - Relevant focused/full builds, axiom/hole scans, and `git diff --check` pass.
+
+Completion evidence, exact theorem signatures, equation mapping, assumption
+and quantifier audits, angular-smearing deferment, build/scan results, and axiom
+output are recorded in `goal-1/7-ROBUSTNESS.md`.
 
 ### 8-EXAMPLES
 

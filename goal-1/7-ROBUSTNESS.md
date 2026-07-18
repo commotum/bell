@@ -2,8 +2,8 @@
 
 ## Current Facts
 
-- Stages 1–6 are complete. The Stage 6 plan/result documents remain existing
-  workspace changes and will be preserved while this stage proceeds.
+- At the Stage 7 initial sync, Stages 1–6 were complete. Pre-existing Stage 6
+  plan/result workspace changes were preserved rather than rewritten.
 - The pinned baseline command
   `cd formal && lake build Bell.Inequality.Original Bell.Geometry.Violation
   Bell` succeeds with 2,549 graph jobs.
@@ -82,7 +82,8 @@ literal angular-smearing construction is or is not formalized.
   bridges, and only the integrability/range facts consumed by the robust
   inequality.
 - Add a target-agnostic uniform-approximation leaf defining a nonnegative
-  sup-error predicate on explicit setting sets for two setting-indexed real
+  uniform absolute-error predicate on explicit setting sets for two
+  setting-indexed real
   functions and proving
   reflexivity/symmetry or triangle-addition only where consumed.
 - Add `Bell.Inequality.Robust` as a theorem leaf importing only abstract
@@ -143,7 +144,7 @@ lake build
   the numerical constant from the explicit Stage 6 geometry. Do not define the
   target as `-inner` inside the approximation theorem.
 - Inspect the uniform theorem to confirm that its quantifier is `forall a in
-  unitDirections, forall b in unitDirections` outside any hidden-variable a.e.
+  unitDirectionSet, forall b in unitDirectionSet` outside any hidden-variable a.e.
   statement and that the radius is explicitly nonnegative.
 - Do not claim literal angular averaging, Fubini factorization, or a sphere
   neighborhood error unless those constructions and hypotheses are actually
@@ -203,6 +204,9 @@ Stage 7 completed on 2026-07-17.
     `|P(a,b)-P(a,c)| <= 2+P(b,c)+P(b,b)`; and
   - `target_bell_robust_of_four_errors`, which transfers four radius-`eta`
     errors to the exact `4*eta` target inequality.
+- The two response-function arities retain local setting dependence, while the
+  single stored hidden-variable measure retains measurement-setting
+  independence. Neither structural choice bundles normalization or range.
 - `Bell.Geometry.RobustViolation` is the public integration leaf. It adds
   `unitDirectionSet`, membership proofs for the three Bell directions, the
   exact scale and positivity facts, finite and unit-domain singlet lower
@@ -237,6 +241,10 @@ leaves were not edited for this stage.
   `|Q(a,b)-Q(a,c)| <= 2+Q(b,c)+Q(b,b)+4*eta`. Substitution of the Stage 6
   matrix-derived singlet values gives `sqrt(2)-1 <= 4*eta`, hence
   `(sqrt(2)-1)/4 <= eta`.
+- The four-error theorem needs no separately stated `0 <= eta`: any one of its
+  absolute-error hypotheses already entails nonnegativity. The reusable
+  `UniformlyWithinOn` predicate nevertheless packages radius nonnegativity
+  explicitly.
 - Taking `eta=epsilon+delta` gives
   `(sqrt(2)-1)/4-delta <= epsilon`; the separate positivity theorem assumes
   `delta < (sqrt(2)-1)/4`.
@@ -312,6 +320,62 @@ integrals. The quantifier scan confirms explicit unit-set quantifiers and
 setting-wise a.e. predicates. The only smearing scan hits in Lean are docstrings
 that explicitly disclaim a cap construction and Fubini derivation.
 `git diff --check` passed.
+
+The broader a.e./measure-order scan produced one diagnostic-only hit in
+`Bell.Audit.ProbabilityApi`: a lemma taking two separate a.e. propositions. It
+contains no setting quantifier and is not a common-null-set conversion. The
+goal-folder proof-hole scan hit only guardrail templates, audit-result prose,
+and the English phrase “admit averages”; the Lean-source-only scan was empty.
+The stale-document scan was empty.
+
+The exact final scan surface was:
+
+```text
+rg -n --glob '*.lean' \
+  '\bsorry\b|\badmit\b|^\s*axiom\b|\bunsafe\b|\bopaque\b|\bnative_decide\b' \
+  formal/Bell
+rg -n '\bsorry\b|\badmit\b|\baxiom\b|\bunsafe\b|\bopaque\b|\bnative_decide\b' \
+  goal-1
+rg -n 'Is(AE)?Binary|PerfectAnticorrelation|singlet|Quantum|Geometry' \
+  formal/Bell/Inequality/Robust.lean
+rg -n '^import Bell\.(Quantum|Geometry)|^import Bell$' \
+  formal/Bell/HiddenVariable/Bounded.lean \
+  formal/Bell/Approximation/Uniform.lean formal/Bell/Inequality/Robust.lean
+rg -n 'fun .*=> -inner|def .*singlet.*[Cc]orrelation|h[Rr]obust|h[Bb]ell[Ii]nequality' \
+  formal/Bell/Inequality/Robust.lean \
+  formal/Bell/Geometry/RobustViolation.lean
+rg -n 'UniformlyWithinOn|unitDirectionSet|∀ᵐ|∀ .*∈.*AEMeasurable|∀ .*∈.*IsAEBoundedByOne' \
+  formal/Bell/Approximation/Uniform.lean \
+  formal/Bell/Geometry/RobustViolation.lean \
+  formal/Bell/HiddenVariable/Bounded.lean
+rg -ni 'kernel|cap|fubini|atomless|isolated|angular' \
+  formal/Bell/HiddenVariable/Bounded.lean \
+  formal/Bell/Approximation/Uniform.lean formal/Bell/Inequality/Robust.lean \
+  formal/Bell/Geometry/RobustViolation.lean formal/Bell/Audit/Robust.lean
+rg -ni 'signal|lorentz|spacetime|superluminal|influence' \
+  formal/Bell/HiddenVariable/Bounded.lean \
+  formal/Bell/Approximation/Uniform.lean formal/Bell/Inequality/Robust.lean \
+  formal/Bell/Geometry/RobustViolation.lean
+rg -n 'hiddenMeasure\s*:|Measure.*(Direction|unitDirectionSet)|hiddenMeasure.*→' \
+  formal/Bell/HiddenVariable/Basic.lean \
+  formal/Bell/HiddenVariable/Bounded.lean formal/Bell/Inequality/Robust.lean \
+  formal/Bell/Geometry/RobustViolation.lean
+rg -n '∀ᵐ[^\n]*∀|hiddenMeasure\s*:[^\n]*Setting|Setting[^\n]*→[^\n]*Measure' \
+  formal/Bell
+rg -n 'Stage 7.*(in progress|will reuse)|Later robust theorem|\[ \]|In progress' \
+  goal-1/0-plan.md goal-1/7-ROBUSTNESS.md
+git diff --check
+git status --short
+```
+
+At the final recorded gate, `git status --short` listed only the expected
+Stage 7 fold-back/doc-clarification paths:
+
+```text
+ M formal/Bell/Inequality/Robust.lean
+ M goal-1/0-plan.md
+ M goal-1/7-ROBUSTNESS.md
+```
 
 One audit build initially failed because the opaque uniform predicate preserved
 the radius expression `1+1` rather than reducing it definitionally to `2` under

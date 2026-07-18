@@ -4,8 +4,7 @@
 
 - Scaffold created 2026-07-17.
 - Stages 1 (`1-GUARDRAILS`) through 7 (`7-ROBUSTNESS`) completed
-  2026-07-17. Stage 8 (`8-EXAMPLES`) is the next incomplete stage and has not
-  begun.
+  2026-07-17. Stage 8 (`8-EXAMPLES`) began 2026-07-17 and is in progress.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
 - The pinned project now exports a general-measure deterministic local-model
@@ -168,6 +167,14 @@ unless their concepts receive independent formal definitions.
   normalization, equation (3), exact direction geometry, and the concrete
   contradiction, plus the bounded-response robust inequality and exact uniform
   singlet non-approximation constant.
+- Stage 8 source/API synchronization selects a bounded-response CHSH theorem
+  and an explicit four-direction singlet violation as the smallest modern
+  generalization with a real consumer. It will be labeled as post-1964 rather
+  than mapped to a numbered claim of Bell's paper. Bell's sphere-sign,
+  single-particle, mixed-state, nonlocal, stochastic-kernel, and
+  higher-dimensional illustrations remain candidates for documented
+  deferment unless their additional measure/geometry infrastructure is
+  justified independently.
 
 ### Assumptions and open design hypotheses
 
@@ -198,6 +205,10 @@ unless their concepts receive independent formal definitions.
   instantiation remains optional and would require additional center-indexed
   probability measures, support, joint measurability/product integrability,
   Fubini, and uniform geometric-error proofs.
+- The Stage 8 CHSH theorem should apply to a.e. measurable bounded effective
+  responses, hence require neither binary range nor perfect anticorrelation.
+  Its singlet integration leaf must calculate all four target values through
+  `singlet_spin_correlation`, not install the Tsirelson value as a premise.
 
 ## Success Metrics and Final Verification
 
@@ -379,6 +390,17 @@ pending as identified below.
     It must not be read as the positive averaged dot product. The theorem is
     uniform pointwise in unit settings and makes no `L^p`, setting-a.e., or
     arbitrary-topology claim.
+26. **“Isotropic mixture of product states” does not uniquely specify equation
+    (11).** The coefficient `-1/3` follows from a particular isotropic ensemble,
+    such as uniformly averaging oppositely polarized product states
+    `p ⊗ (-p)`. A future formalization must define that ensemble and derive its
+    second moment; isotropy as informal prose is not by itself a complete
+    mathematical definition.
+27. **CHSH is a modern generalization, not a claim of the 1964 paper.** Its
+    bounded-response form removes the perfect-anticorrelation premise and gives
+    a reusable four-setting inequality. If included in Stage 8, its paper map
+    and theorem documentation must label it as a later corollary rather than
+    assign it to equations (1)–(22).
 
 ## Dependency and Module Notes
 
@@ -776,7 +798,7 @@ Completion evidence, exact theorem signatures, equation mapping, assumption
 and quantifier audits, angular-smearing deferment, build/scan results, and axiom
 output are recorded in `goal-1/7-ROBUSTNESS.md`.
 
-### 8-EXAMPLES
+### 8-EXAMPLES — In progress (began 2026-07-17)
 
 #### Big Picture Objective
 

@@ -92,7 +92,8 @@ or misleading partial formalizations.
   - `bounded_response_chsh_pointwise`;
   - `bounded_response_chsh`, using four fixed a.e. measurable/bounded response
     functions and one probability measure; and
-  - `target_chsh_of_four_errors`, with the exact coefficient `4*eta`.
+  - `target_chsh_of_four_errors`, with coefficient `4*eta` from the four error
+    terms.
 - Add `Bell.Geometry.CHSHViolation` as the public integration leaf with:
   - the fourth direction `chshBobMinus` and its unit norm/inner products;
   - four singlet-correlation values derived through

@@ -20,7 +20,7 @@ public import Bell.Geometry.CHSHViolation
 Public root for the Bell 1964 formalization.
 
 The public abstract layer keeps the fixed hidden-variable measure, local
-deterministic responses, normalization, binary outcomes, measurability, and
+deterministic responses, normalization, binary outcomes, measurability,
 perfect anticorrelation, and correlation reproduction logically distinct.
 Bell's original inequality is proved independently of quantum mechanics and
 geometry. The finite-dimensional singlet calculation is exported from a

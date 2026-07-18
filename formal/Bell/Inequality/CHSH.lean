@@ -145,7 +145,8 @@ theorem bounded_response_chsh
     _ = 2 := by simp
 
 /-- Four fixed correlation-error bounds transfer CHSH from a bounded local
-model to an arbitrary target with the exact coefficient `4 * ε`. -/
+model to an arbitrary target with coefficient `4 * ε`, one contribution per
+error term. -/
 theorem target_chsh_of_four_errors
     (model : DeterministicLocalModel SettingA SettingB Ω)
     [IsProbabilityMeasure model.hiddenMeasure]

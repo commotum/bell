@@ -45,6 +45,7 @@ theorem chshBobMinus_inner_self :
   simp [Fin.sum_univ_three, bellA, bellC, chshBobMinus]
   nlinarith [bellScale_sq]
 
+/-- The anti-diagonal CHSH direction is a unit vector. -/
 theorem chshBobMinus_norm : ‖chshBobMinus‖ = 1 := by
   have hsq : ‖chshBobMinus‖ ^ 2 = (1 : ℝ) := by
     rw [← real_inner_self_eq_norm_sq]
@@ -108,6 +109,7 @@ theorem singlet_chsh_strict_violation :
   rw [singlet_chsh_abs_value]
   linarith [one_sub_bellScale_lt_bellScale]
 
+/-- The calculated four singlet correlations violate the CHSH bound. -/
 theorem singlet_violates_chsh :
     ¬ |chshCombination singletCorrelation bellA bellC bellB chshBobMinus| ≤ 2 :=
   not_le_of_gt singlet_chsh_strict_violation
@@ -174,8 +176,13 @@ theorem singletCorrelations_incompatible_with_boundedLocalModel_at_chshDirection
   rw [hAB, hAD, hCB, hCD] at hbound
   exact singlet_violates_chsh (by simpa [chshCombination] using hbound)
 
-/-- Global singlet-correlation reproduction is impossible for a normalized
-factorized model with setting-wise measurable bounded responses. -/
+/-- Singlet-correlation reproduction on every pair of ambient `Direction`
+values is impossible for a normalized factorized model with setting-wise
+measurable bounded responses.
+
+This is a stronger convenience corollary. The preceding finite theorem uses
+only the four correlations at the proved unit directions needed by the
+physical CHSH contradiction. -/
 theorem no_boundedLocalModel_reproduces_singletCorrelation_via_chsh
     (model : DeterministicLocalModel Direction Direction Ω)
     [IsProbabilityMeasure model.hiddenMeasure]

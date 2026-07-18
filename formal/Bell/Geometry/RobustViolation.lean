@@ -85,7 +85,7 @@ theorem singlet_four_mul_error_lower_bound_at_bellDirections
   rw [← two_mul_bellScale_eq_sqrtTwo]
   linarith
 
-/-- Four fixed errors at Bell's directions force the positive uniform-error
+/-- Four fixed errors with one common radius at Bell's directions force the
 threshold `(sqrt(2)-1)/4`. -/
 theorem singlet_error_lower_bound_at_bellDirections
     (model : DeterministicLocalModel Direction Direction Ω)
@@ -143,11 +143,13 @@ theorem singlet_uniform_error_lower_bound_on_unitDirections
     (hApprox.bound bellB_mem_unitDirectionSet bellC_mem_unitDirectionSet)
     (hApprox.bound bellB_mem_unitDirectionSet bellB_mem_unitDirectionSet)
 
-/-- Abstract equation (22): errors `ε` and `δ` from equations (16)–(17) add,
-and their total obeys Bell's exact numerical bound.
+/-- Bell's direction-specialized consequence of equation (22): errors `ε` and
+`δ` from equations (16)–(17) add, and their total obeys the paper's numerical
+bound.
 
-The intermediate target is arbitrary; constructing it by angular averaging is
-a separate obligation. -/
+The general vector form of equation (22) is not a separate declaration. The
+intermediate target is arbitrary; constructing it by angular averaging and
+proving equation (19) are separate obligations. -/
 theorem bell1964_four_mul_total_error_lower_bound
     (model : DeterministicLocalModel Direction Direction Ω)
     [IsProbabilityMeasure model.hiddenMeasure]

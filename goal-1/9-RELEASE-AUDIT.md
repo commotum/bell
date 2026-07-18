@@ -32,6 +32,13 @@
 - The repository has no CI workflow. Stage 9 will provide and actually exercise
   reproducible local commands; adding hosted CI is not required by the current
   plan.
+- `bell-1964/.DS_Store` is a tracked generated desktop-metadata file and no
+  `.DS_Store` ignore rule exists. It should be removed from the release tree and
+  ignored without touching the paper sources.
+- The root Python/uv starter still contains placeholder metadata and a hello
+  program unrelated to the Lean library. Earlier stages explicitly preserved
+  it; Stage 9 will document that separation rather than delete or repurpose it
+  without user authorization.
 
 ## Updated Assumptions
 
@@ -81,6 +88,9 @@ blurring deferred parts of Bell's argument.
 - Rewrite `README.md` to expose the actual public modules, a minimal Lean usage
   example, exact assumptions/conclusions, pinned setup/build/audit commands,
   the paper map, and known limitations.
+- Remove the tracked `.DS_Store` generated artifact and add a narrow ignore
+  rule. Preserve the unrelated Python/uv starter files and identify them as
+  outside the formal package.
 - Make only narrow docstring or export corrections established by the API
   audit. Avoid proof refactors and unrelated cleanup.
 - Run focused builds for both new leaves, the public root, every existing audit
@@ -97,6 +107,8 @@ Expected files:
 
 ```text
 README.md
+.gitignore
+bell-1964/.DS_Store                 # remove tracked generated artifact
 formal/Bell/PaperMap.lean
 formal/Bell/AxiomAudit.lean
 goal-1/9-RELEASE-AUDIT.md

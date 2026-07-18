@@ -67,6 +67,7 @@ theorem singletState_10 :
 theorem singletState_11 : singletState (1, 1) = 0 := by
   simp [singletState]
 
+/-- The explicitly defined singlet ket has coordinate norm one. -/
 theorem singletState_normalized : IsNormalizedKet singletState := by
   rw [IsNormalizedKet, ketInner]
   simp only [dotProduct, Pi.star_apply, singletState, Fin.isValue,

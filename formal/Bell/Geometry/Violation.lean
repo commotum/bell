@@ -147,8 +147,13 @@ theorem no_deterministicLocalModel_reproduces_singletCorrelations_at_bellDirecti
     model hAaMeas hAbMeas hBbMeas hBcMeas hAaBin hAbBin hBbBin hBcBin
       hAB hAC hBB hBC
 
-/-- Global correlation reproduction is impossible under the corresponding
-setting-wise measurability and a.e. binary-response assumptions. -/
+/-- Correlation reproduction on every pair of ambient `Direction` values is
+impossible under the corresponding setting-wise measurability and a.e.
+binary-response assumptions.
+
+This is a stronger convenience corollary. The preceding finite theorem uses
+only the four correlations at the proved unit directions needed by the
+physical contradiction. -/
 theorem no_deterministicLocalModel_reproduces_singletCorrelation
     (model : DeterministicLocalModel Direction Direction Ω)
     [IsProbabilityMeasure model.hiddenMeasure]

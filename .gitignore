@@ -11,3 +11,6 @@ wheels/
 
 # Lean/Lake generated files
 formal/.lake/
+
+# Desktop metadata
+.DS_Store

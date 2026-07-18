@@ -59,6 +59,7 @@ theorem pauliZ_isHermitian : pauliZ.IsHermitian := by
   fin_cases i <;> fin_cases j <;>
     simp [pauliZ, Matrix.conjTranspose_apply]
 
+/-- Every real directional Pauli observable is Hermitian. -/
 theorem spinObservable_isHermitian (a : Direction) :
     (spinObservable a).IsHermitian := by
   rw [Matrix.IsHermitian]
@@ -119,6 +120,7 @@ theorem spinObservable_sq_eq_one_of_inner_self_eq_one (a : Direction)
   rw [hcoord]
   norm_num
 
+/-- A unit-length directional Pauli observable squares to the identity. -/
 theorem spinObservable_sq_eq_one_of_norm_eq_one (a : Direction)
     (ha : ‖a‖ = 1) :
     spinObservable a ^ 2 = 1 := by

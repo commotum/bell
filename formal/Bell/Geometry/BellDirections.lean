@@ -7,9 +7,12 @@ import Mathlib.Tactic.NormNum
 /-!
 # Concrete Bell directions
 
-This module constructs Bell's three coplanar unit directions. It contains only
-Euclidean geometry and square-root arithmetic; hidden-variable models, Bell's
-inequality, and the singlet state are not dependencies.
+This module gives a coordinate realization of the three coplanar unit
+directions Bell uses after equation (22). Reusing them to instantiate equation
+(3) and the exact inequality (15) is a modern explicit presentation of the
+contradiction. The module contains only Euclidean geometry and square-root
+arithmetic; hidden-variable models, Bell's inequality, and the singlet state
+are not dependencies.
 -/
 
 @[expose] public section
@@ -80,9 +83,11 @@ theorem bellB_inner_bellC_eq_one_div_sqrt_two :
     inner ℝ bellB bellC = 1 / Real.sqrt 2 := by
   rw [bellB_inner_bellC, bellScale_eq_one_div_sqrt_two]
 
+/-- The first Bell direction is a unit vector. -/
 theorem bellA_norm : ‖bellA‖ = 1 := by
   simp [bellA]
 
+/-- The third Bell direction is a unit vector. -/
 theorem bellC_norm : ‖bellC‖ = 1 := by
   simp [bellC]
 
@@ -91,6 +96,7 @@ theorem bellB_inner_self : inner ℝ bellB bellB = 1 := by
   simp [Fin.sum_univ_three, bellA, bellB, bellC]
   nlinarith [bellScale_sq]
 
+/-- The intermediate Bell direction is a unit vector. -/
 theorem bellB_norm : ‖bellB‖ = 1 := by
   have hsq : ‖bellB‖ ^ 2 = (1 : ℝ) := by
     rw [← real_inner_self_eq_norm_sq]

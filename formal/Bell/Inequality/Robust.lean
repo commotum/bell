@@ -123,7 +123,7 @@ theorem bounded_response_bell_robust
       simp [correlation]
 
 /-- Four correlation-error bounds transfer the robust local inequality to an
-arbitrary target with the exact coefficient `4 * ε`. -/
+arbitrary target with coefficient `4 * ε`, one contribution per error term. -/
 theorem target_bell_robust_of_four_errors
     (model : DeterministicLocalModel Setting Setting Ω)
     [IsProbabilityMeasure model.hiddenMeasure]

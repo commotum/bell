@@ -184,8 +184,8 @@ unless their concepts receive independent formal definitions.
   `(sqrt 2 - 1) / 2 <= eta` and rules out a bounded local model reproducing
   those four singlet correlations. The global no-model theorem is a convenient
   stronger corollary whose premise reproduces the target on every pair of
-  ambient `Direction` values; the finite four-direction result is the minimal
-  physical statement used by the contradiction.
+  ambient `Direction` values; the finite theorem assumes only the four proved
+  unit-setting pairs used by the CHSH contradiction.
 - CHSH is recorded as a modern, post-1964 generalization rather than mapped to
   a numbered claim of Bell's paper. Bell's sphere-sign, single-particle,
   mixed-state, nonlocal, stochastic-kernel, and higher-dimensional
@@ -420,7 +420,8 @@ pending as identified below.
     bounded-response form removes the perfect-anticorrelation premise and gives
     a reusable four-setting inequality. Stage 8 labels it as a later theorem
     rather than assigning it to equations (1)–(22), calculates the singlet value
-    at four unit directions, and proves the uniform four-error obstruction
+    at four unit directions, and proves the finite common-radius four-error
+    obstruction
     `(sqrt 2 - 1) / 2 <= eta` without assuming binary responses or perfect
     anticorrelation.
 28. **A stochastic-local reduction needs conditional factorization.** Local
@@ -457,7 +458,10 @@ now include:
   signatures, and Stage 6 axiom output; and
 - `Bell.Audit.Robust`, covering a genuinely nonbinary bounded model, sharp
   robust algebra, uniform-error composition, unit-setting domains, public
-  signatures, and Stage 7 axiom output.
+  signatures, and Stage 7 axiom output; and
+- `Bell.Audit.CHSH`, covering a normalized one-point bounded/nonbinary model
+  saturating the CHSH bound, a representative Alice binary-to-bounded bridge,
+  explicit directions and values, public signatures, and Stage 8 axiom output.
 
 Relevant mathlib areas used or retained for later implementation include:
 
@@ -485,14 +489,24 @@ Bell/
   Approximation/Uniform.lean
   Inequality/Original.lean
   Inequality/Robust.lean
+  Inequality/CHSH.lean
   Quantum/Basic.lean
   Quantum/Pauli.lean
   Quantum/Singlet.lean
   Geometry/BellDirections.lean
   Geometry/Violation.lean
   Geometry/RobustViolation.lean
+  Geometry/CHSHViolation.lean
+  Audit/ProbabilityApi.lean         # diagnostic; not re-exported
+  Audit/GeometryApi.lean            # diagnostic; not re-exported
+  Audit/QuantumApi.lean             # diagnostic; not re-exported
+  Audit/LocalModel.lean             # diagnostic; not re-exported
+  Audit/OriginalInequality.lean     # diagnostic; not re-exported
+  Audit/Singlet.lean                # diagnostic; not re-exported
+  Audit/Violation.lean              # diagnostic; not re-exported
   Audit/Robust.lean                 # diagnostic; not re-exported
-  Examples/SphereModel.lean         # optional, not yet implemented
+  Audit/CHSH.lean                   # diagnostic; not re-exported
+  Examples/SphereModel.lean         # explicitly deferred optional leaf
   PaperMap.lean                     # planned release documentation
   AxiomAudit.lean                   # planned consolidated release audit
   Bell.lean
@@ -582,6 +596,21 @@ signatures remain provisional until checked against mathlib conventions.
   `bell1964_epsilon_lower_bound_of_uniform_averaging_errors`, and
   `bell1964_epsilon_pos_of_uniform_averaging_errors`: actual Stage 7 abstract
   equation-(16)–(22) triangle, solved lower bound, and positivity result.
+- `chshCombination`, `bounded_response_chsh_pointwise`, and
+  `bounded_response_chsh`: actual Stage 8 target-agnostic CHSH expression,
+  scalar inequality, and arbitrary-probability-measure bounded-response theorem
+  for four fixed responses.
+- `target_chsh_of_four_errors`: actual Stage 8 transfer from four fixed
+  correlation errors to `|CHSH(target)| <= 2 + 4 * epsilon`.
+- `chshBobMinus`, its unit-norm/inner-product theorems,
+  `singlet_chsh_combination`, `singlet_chsh_abs_value_eq_two_mul_sqrtTwo`,
+  `singlet_chsh_strict_violation`, and `singlet_violates_chsh`: actual Stage 8
+  explicit geometry and matrix-derived singlet CHSH calculation.
+- `singlet_chsh_error_lower_bound_at_directions`,
+  `singletCorrelations_incompatible_with_boundedLocalModel_at_chshDirections`,
+  and `no_boundedLocalModel_reproduces_singletCorrelation_via_chsh`: actual
+  Stage 8 finite error obstruction and finite/global correlation
+  non-reproduction results for bounded local responses.
 - `angular_average_factorization` and
   `bell1964_smoothed_nonapproximation`: deferred names for a possible optional
   instantiation of Bell's literal averaging construction; no such declaration
@@ -829,7 +858,7 @@ Completion evidence, exact theorem signatures, equation mapping, assumption
 and quantifier audits, angular-smearing deferment, build/scan results, and axiom
 output are recorded in `goal-1/7-ROBUSTNESS.md`.
 
-### 8-EXAMPLES — In progress (began 2026-07-17)
+### 8-EXAMPLES — Complete (2026-07-17)
 
 #### Big Picture Objective
 
@@ -856,6 +885,10 @@ understanding or reuse of the verified core.
 - Deferred illustrations are listed with reasons; none blocks the minimum core.
 - Added generalizations preserve explicit assumption boundaries.
 - Focused/full builds, axiom/hole scans, and `git diff --check` pass.
+
+Completion evidence, exact theorem signatures, source/API selection, deferment
+obligations, assumption-flow audit, build failures and corrections, scan
+classifications, and axiom output are recorded in `goal-1/8-EXAMPLES.md`.
 
 ### 9-RELEASE-AUDIT
 

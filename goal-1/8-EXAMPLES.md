@@ -2,9 +2,9 @@
 
 ## Current Facts
 
-- Stages 1–7 are complete. The Stage 7 bounded-response and uniform-robustness
-  leaves are public, and its final record remains an existing workspace change
-  that this stage will preserve.
+- Stages 1–8 are complete. The Stage 7 bounded-response and uniform-robustness
+  leaves and the Stage 8 CHSH leaves are public; their diagnostic audit leaves
+  remain non-exported.
 - The Stage 8 baseline command `cd formal && lake build Bell` succeeds with
   2,553 graph jobs.
 - `Bell.Audit.LocalModel` already contains a genuine normalized two-point
@@ -35,20 +35,20 @@
   embeddings and state support. Extending spin operators by zero produces a
   zero eigenvalue off the selected subspace, so it does not preserve a global
   binary-outcome interpretation without a support-restricted theorem.
-- A modern CHSH theorem has a direct public consumer and needs none of that
+- The modern CHSH theorem has a direct public consumer and needs none of that
   measure geometry. For real scalars bounded by one,
   `|x*(y+y')+x'*(y-y')| <= 2`; integrating gives
   `|P(a,b)+P(a,b')+P(a',b)-P(a',b')| <= 2` for one fixed normalized hidden
   measure and four setting-specific a.e. measurability/boundedness hypotheses.
-  A scratch Lean prototype of the scalar and general-measure statements
-  compiles with only `[propext, Classical.choice, Quot.sound]`.
+  The scalar and general-measure statements now compile with only
+  `[propext, Classical.choice, Quot.sound]`.
 - With `a=bellA`, `a'=bellC`, `b=bellB`, and
-  `b'=bellScale • (bellA-bellC)`, the calculated singlet values are expected to
-  be `-bellScale`, `-bellScale`, `-bellScale`, and `bellScale`. The CHSH
+  `b'=bellScale • (bellA-bellC)`, the calculated singlet values are
+  `-bellScale`, `-bellScale`, `-bellScale`, and `bellScale`. The CHSH
   combination is therefore `-4*bellScale`, with absolute value `2*sqrt(2)>2`.
-  These geometry and matrix-derived claims remain planning facts until the
-  Stage 8 integration leaf compiles.
-- Four target-correlation errors of radius `eta` should transfer the CHSH bound
+  These geometry and matrix-derived claims compile in the Stage 8 integration
+  leaf.
+- Four target-correlation errors of radius `eta` transfer the CHSH bound
   to `|CHSH(target)| <= 2+4*eta`. At the preceding directions this gives the
   modern finite-setting lower bound `(sqrt(2)-1)/2 <= eta`.
 
@@ -59,8 +59,8 @@
   Label it explicitly as a modern theorem, not as Bell's equation (15) or any
   numbered statement in the 1964 paper.
 - Use `DeterministicLocalModel` only as the fixed-measure factorized-response
-  interface. The CHSH result will assume real effective responses bounded by
-  one a.e.; it will not assert that those effective responses are raw binary
+  interface. The CHSH result assumes real effective responses bounded by one
+  a.e.; it does not assert that those effective responses are raw binary
   deterministic outcomes.
 - Keep normalization, each fixed response's a.e. measurability, each fixed
   response's a.e. bound, and target reproduction/error assumptions separate.
@@ -102,8 +102,9 @@ or misleading partial formalizations.
   - finite/global no-bounded-local-model corollaries whose assumptions remain
     explicit.
 - Add non-exported `Bell.Audit.CHSH` checking the public root, a sharp
-  normalized one-point bounded/nonbinary model, binary-to-bounded specialization,
-  directions/values, theorem signatures, and `#print axioms` results.
+  normalized one-point bounded/nonbinary model, a representative Alice
+  binary-to-bounded bridge, directions/values, theorem signatures, and
+  `#print axioms` results.
 - Re-export only the two stable public leaves from `Bell.lean` after their
   focused builds pass. Keep the audit leaf diagnostic.
 - Fold exact declaration names, the modern-generalization label, source
@@ -179,9 +180,9 @@ lake build
   violation.
 - [x] A compiled theorem proves `(sqrt(2)-1)/2 <= eta` from four fixed singlet
   correlation error bounds.
-- [x] Finite and global no-model corollaries preserve normalization,
-  measurability, boundedness, fixed-measure locality, and correlation
-  reproduction as distinct assumptions.
+- [x] Finite and global no-model corollaries preserve local response arities,
+  one fixed setting-independent measure, normalization, measurability,
+  boundedness, and correlation reproduction as distinct assumptions.
 - [x] A non-exported audit checks a sharp finite model, public exports,
   signatures, numerical boundaries, and all headline theorem axioms.
 - [x] Every deferred equation-(4)–(11), nonlocal, stochastic, and
@@ -220,14 +221,19 @@ Stage 8 completed on 2026-07-17.
 - `singletCorrelations_incompatible_with_boundedLocalModel_at_chshDirections`
   is the finite assumption-separated bridge.
   `no_boundedLocalModel_reproduces_singletCorrelation_via_chsh` is its global
-  setting-wise corollary. Both concern correlation reproduction only.
+  setting-wise corollary. The finite theorem uses exactly four proved unit
+  direction pairs and is the finite physical statement used by the
+  contradiction. The global
+  theorem assumes reproduction for every pair of ambient `Direction` values
+  and is a stronger convenience corollary. Both concern correlation
+  reproduction only.
 - `Bell.Audit.CHSH` is diagnostic and is not re-exported. Its normalized Dirac
   one-point model makes Alice's responses `1`, Bob's first response `1`, and
   Bob's second response `0`. It proves that the Bob response is nonbinary and
   that the CHSH combination is exactly `2`, so both sharpness and the genuine
-  bounded-response generality are exercised. The audit also checks the binary
-  bridge, direction norm, exact quantum value, positivity, signatures, and
-  axioms.
+  bounded-response generality are exercised. The audit also checks a
+  representative Alice binary-to-bounded bridge, direction norm, exact quantum
+  value, positivity, signatures, and axioms.
 - `Bell.lean` remains a thin umbrella and now re-exports the two stable CHSH
   leaves. It does not export `Bell.Audit.CHSH`.
 

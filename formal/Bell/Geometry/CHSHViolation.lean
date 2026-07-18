@@ -91,7 +91,7 @@ theorem singlet_chsh_abs_value :
   · ring
   · linarith [bellScale_pos]
 
-theorem four_mul_bellScale_eq_two_mul_sqrtTwo :
+private theorem four_mul_bellScale_eq_two_mul_sqrtTwo :
     4 * bellScale = 2 * Real.sqrt 2 := by
   nlinarith [bellScale_sq,
     Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), bellScale_pos, sqrtTwo_pos]

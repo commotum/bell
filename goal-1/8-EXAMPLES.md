@@ -17,13 +17,17 @@
   recorded in the correction log.
 - Equation (11) is not determined by the phrase “isotropic mixture of product
   states” alone. Its coefficient `-1/3` requires a specified ensemble, for
-  example the uniform mixture of oppositely polarized states, and a derived
-  sphere second-moment calculation.
+  example the literal uniform mixture of oppositely polarized directions,
+  which needs a derived sphere second-moment calculation. A finite six-axis
+  antiparallel ensemble can realize the same correlation, but that alone does
+  not establish full rotational invariance of the mixed state.
 - The paper's final Section III construction deliberately violates local
   response arity and repeats the equation-(6) prescribed-angle issue. It is an
   optional countermodel, not a premise or consumer of the verified core.
-- A full stochastic-local reduction would require probability kernels,
-  conditional means, joint measurability, and product/Fubini arguments. The
+- A full stochastic-local reduction requires local conditional laws (as
+  kernels or explicit Bernoulli parameters), conditional factorization,
+  conditional means, joint measurability, and the product/Fubini or equivalent
+  finite-law argument. The
   existing bounded-response theorem already covers the resulting effective
   response functions once those facts are supplied, so a superficial renamed
   structure would not constitute the reduction.
@@ -98,7 +102,7 @@ or misleading partial formalizations.
   - finite/global no-bounded-local-model corollaries whose assumptions remain
     explicit.
 - Add non-exported `Bell.Audit.CHSH` checking the public root, a sharp
-  normalized one-point binary model, binary-to-bounded specialization,
+  normalized one-point bounded/nonbinary model, binary-to-bounded specialization,
   directions/values, theorem signatures, and `#print axioms` results.
 - Re-export only the two stable public leaves from `Bell.lean` after their
   focused builds pass. Keep the audit leaf diagnostic.
@@ -276,16 +280,21 @@ equation-(16)–(22) approximation constant.
   a binary outcome at zero, so it cannot bypass that obligation.
 - Equation (11)'s `-(1/3) a dot b` is correct for a specified uniform ensemble
   of oppositely polarized product states. The paper's phrase “isotropic mixture
-  of product states” alone does not specify this ensemble. A formal proof needs
-  either the sphere second moment or a defined mixed density matrix and is
-  deferred.
+  of product states” alone does not specify this ensemble. Bell's literal
+  continuous ensemble needs the sphere second moment. A separately defined
+  six-axis antiparallel ensemble can realize the same correlation, but proving
+  only that formula would not prove full state isotropy. Stable mixture
+  semantics and either derivation remain deferred.
 - The final Section III illustration is parameter-nonlocal because Alice's
   response uses Bob's setting. It repeats the prescribed-angle and sign-zero
   obligations and is deferred; this says nothing by itself about operational
   signaling.
 - A genuine stochastic-local reduction needs binary conditional laws, local
-  kernels, conditional factorization, joint measurability, and the associated
-  integration argument. The biases then lie in `[-1,1]` and feed the existing
+  conditional distributions (kernels or explicit Bernoulli parameters), the
+  factorization
+  `P(x,y|a,b,lambda)=P_A(x|a,lambda)*P_B(y|b,lambda)`, and the associated
+  measurability/integration argument. Local marginals alone are insufficient.
+  The biases then lie in `[-1,1]` and feed the existing
   bounded theorem. Merely postulating their product correlation would not
   prove the reduction, so no renamed wrapper was added.
 - Section V needs isometric qubit embeddings, an embedded singlet, subspace

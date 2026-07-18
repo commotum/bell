@@ -3,8 +3,8 @@
 ## Status
 
 - Scaffold created 2026-07-17.
-- Stages 1 (`1-GUARDRAILS`) through 7 (`7-ROBUSTNESS`) completed
-  2026-07-17. Stage 8 (`8-EXAMPLES`) began 2026-07-17 and is in progress.
+- Stages 1 (`1-GUARDRAILS`) through 8 (`8-EXAMPLES`) completed
+  2026-07-17. Stage 9 (`9-RELEASE-AUDIT`) is the next incomplete stage.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
 - The pinned project now exports a general-measure deterministic local-model
@@ -41,6 +41,14 @@
   positive singlet uniform-error threshold `(sqrt(2)-1)/4`, and Bell's
   `epsilon`/`delta` lower bound on explicit unit-setting domains. Exact results
   and the literal-smearing deferment are in `goal-1/7-ROBUSTNESS.md`.
+- Stage 8 added `Bell.Inequality.CHSH` and
+  `Bell.Geometry.CHSHViolation`, re-exported their stable surface from
+  `Bell.lean`, and added the non-exported `Bell.Audit.CHSH`. It proves the
+  bounded-response CHSH inequality, the exact four-error transfer, a calculated
+  four-direction singlet value `2 * sqrt 2`, the finite error threshold
+  `(sqrt 2 - 1) / 2`, and finite/global correlation non-reproduction results.
+  It labels CHSH as a modern generalization and records exact deferments for the
+  paper's optional examples. Exact results are in `goal-1/8-EXAMPLES.md`.
 - For a fixed triple, checked direct algebra shows equation (15) needs perfect
   anticorrelation only at `b`; requiring it at `c` as well would be stronger
   than necessary. The public direct theorem uses this minimal fixed-`b`
@@ -107,11 +115,12 @@ unless their concepts receive independent formal definitions.
 - The Lean project is under `formal/`, pinned to Lean `v4.31.0` and mathlib
   commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. Its public `Bell` root
   re-exports five hidden-variable modules, the target-agnostic uniform-error
-  leaf, the original and robust inequality leaves, the separate quantum
-  singlet leaf, and the exact and robust geometric integration layers. Eight
+  leaf, the original, robust, and CHSH inequality leaves, the separate quantum
+  singlet leaf, and the exact, robust, and CHSH geometric integration layers.
+  Nine
   non-exported audit leaves cover dependency probes, the local-model API, the
   abstract inequalities, quantum conventions/calculation, the concrete
-  violation, and robustness.
+  violations, robustness, and CHSH.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
@@ -161,20 +170,27 @@ unless their concepts receive independent formal definitions.
   smearing theorem would need parameterized local probability measures plus an
   atomlessness or surface-absolute-continuity premise; arbitrary supported
   measures include Dirac masses and do not remove isolated exceptions.
-- Stages 3–7 now check the structural local-model facts, correlation integral,
+- Stages 3–8 now check the structural local-model facts, correlation integral,
   response-product integrability and range, correlation-`-1` implication,
   equation (14), Bell inequality, Pauli/involution properties, singlet
   normalization, equation (3), exact direction geometry, and the concrete
   contradiction, plus the bounded-response robust inequality and exact uniform
-  singlet non-approximation constant.
-- Stage 8 source/API synchronization selects a bounded-response CHSH theorem
-  and an explicit four-direction singlet violation as the smallest modern
-  generalization with a real consumer. It will be labeled as post-1964 rather
-  than mapped to a numbered claim of Bell's paper. Bell's sphere-sign,
-  single-particle, mixed-state, nonlocal, stochastic-kernel, and
-  higher-dimensional illustrations remain candidates for documented
-  deferment unless their additional measure/geometry infrastructure is
-  justified independently.
+  singlet non-approximation constant. Stage 8 additionally proves the
+  bounded-response CHSH inequality for four fixed responses on one normalized
+  hidden measure, transfers four target errors to the bound `2 + 4 * eta`, and
+  calculates an explicit singlet CHSH value with absolute value
+  `2 * sqrt 2`.
+- At the four proved unit directions, Lean derives the CHSH error obstruction
+  `(sqrt 2 - 1) / 2 <= eta` and rules out a bounded local model reproducing
+  those four singlet correlations. The global no-model theorem is a convenient
+  stronger corollary whose premise reproduces the target on every pair of
+  ambient `Direction` values; the finite four-direction result is the minimal
+  physical statement used by the contradiction.
+- CHSH is recorded as a modern, post-1964 generalization rather than mapped to
+  a numbered claim of Bell's paper. Bell's sphere-sign, single-particle,
+  mixed-state, nonlocal, stochastic-kernel, and higher-dimensional
+  illustrations are explicitly deferred with their additional obligations in
+  `goal-1/8-EXAMPLES.md`.
 
 ### Assumptions and open design hypotheses
 
@@ -205,10 +221,11 @@ unless their concepts receive independent formal definitions.
   instantiation remains optional and would require additional center-indexed
   probability measures, support, joint measurability/product integrability,
   Fubini, and uniform geometric-error proofs.
-- The Stage 8 CHSH theorem should apply to a.e. measurable bounded effective
-  responses, hence require neither binary range nor perfect anticorrelation.
-  Its singlet integration leaf must calculate all four target values through
-  `singlet_spin_correlation`, not install the Tsirelson value as a premise.
+- The Stage 8 CHSH theorem applies to a.e. measurable bounded effective
+  responses and requires neither binary range nor perfect anticorrelation. Its
+  singlet integration leaf calculates all four target values through
+  `singlet_spin_correlation`; the value `2 * sqrt 2` is a proved conclusion,
+  not a premise.
 
 ## Success Metrics and Final Verification
 
@@ -245,10 +262,10 @@ The original objective is complete only when all of the following hold:
 | Sec. II, (1), p. 196 | Deterministic binary responses `A(a,lambda)`, `B(b,lambda)` | Stage 3: `DeterministicLocalModel`, `IsBinaryValued`, `AliceBinary`, `BobBinary`; locality visible in response arity |
 | Sec. II, (2), p. 196; (12), p. 197 | Correlation under normalized `rho` | Stage 3: fixed arbitrary `Measure`, separate `IsProbabilityMeasure`, and Bochner `correlation`; Stage 6: generic `ReproducesCorrelationAt`/`ReproducesCorrelation`; no density required |
 | Sec. II, (3), p. 196 | Singlet correlation `-a dot b` | `singlet_spin_expectation_coordinates`, `singlet_spin_expectation`, and real `singlet_spin_correlation`, derived from explicit Pauli matrices, Kronecker observable, and normalized singlet ket |
-| Sec. III, (4)–(7), p. 196 | Single-particle sign model | Optional example; make sign-zero explicit and replace the globally invalid “rotate towards” instruction by prescribed-angle existence |
-| Sec. III, (8)–(10), p. 197 | Uniform-sphere local example and linear-in-angle correlation | Optional diagnostic/example; verify sphere measure and boundaries; equation (9)'s printed left side is corrected explicitly |
-| Sec. III, (11), p. 197 | Isotropic mixture correlation `-(1/3)a dot b` | Optional quantum example, outside minimum core |
-| Sec. III, final paragraph, p. 197 | Nonlocal construction reproducing the correlation | Documentation or optional countermodel, explicitly nonlocal; same “rotate towards” correction as (6) |
+| Sec. III, (4)–(7), p. 196 | Single-particle sign model | Explicitly deferred in Stage 8. A faithful theorem needs normalized hemisphere surface measure, a total sign convention, a null equator proof, a spherical-lune probability calculation, and prescribed-angle existence. Equation (6) requires `theta'=(pi/2)*(1-cos theta)`; the printed “rotate towards” instruction fails for some obtuse angles. |
+| Sec. III, (8)–(10), p. 197 | Uniform-sphere local example and linear-in-angle correlation | Explicitly deferred in Stage 8. The printed equation-(9) response is corrected to `B(b,lambda)=-sign(b dot lambda)`. A proof still needs normalized sphere measure, total binary responses, null equators, and the lune probability `theta/pi`; `Real.sign` is zero on the boundary. |
+| Sec. III, (11), p. 197 | Isotropic mixture correlation `-(1/3)a dot b` | Explicitly deferred in Stage 8. The ensemble must be specified. Bell's literal uniform ensemble of product states polarized along opposite directions requires a sphere second-moment proof. A six-axis antiparallel ensemble realizes the same correlation, but that correlation alone does not establish full rotational invariance of the state. |
+| Sec. III, final paragraph, p. 197 | Nonlocal construction reproducing the correlation | Explicitly deferred one-sided parameter-nonlocal illustration: Alice's response uses Bob's setting. It repeats the prescribed-angle/sign-boundary obligations and is not an operational-signaling theorem. |
 | Sec. IV, (13), p. 197 | Perfect anticorrelation from correlation `-1` | `perfectAnticorrelationAt_of_correlation_eq_neg_one`, fixed-setting a.e.; audited with a null exception that prevents pointwise strengthening |
 | Sec. IV, (14), p. 197 | Rewrite using perfect anticorrelation | `correlation_eq_neg_integral_alice_mul_of_perfectAnticorrelationAt` |
 | Sec. IV, (15), pp. 197–198 | Original Bell inequality | `bell_original_of_perfectAnticorrelationAt` and the diagonal-correlation corollary; general arbitrary probability measure, no quantum premise. Stage 6 separately gives `singlet_violates_bell_original` and the finite no-model corollary. |
@@ -257,14 +274,15 @@ The original objective is complete only when all of the following hold:
 | Sec. IV, (19)–(20), p. 198 | Factorization through averaged responses bounded by one | `IsBoundedByOne`/`IsAEBoundedByOne`, their setting-wise variants, and `bounded_response_bell_robust` formalize the post-factorization bounded-response argument. A concrete cap-measure construction and Fubini derivation of (19) are explicitly deferred. |
 | Sec. IV, unnumbered robust algebra and (21)–(22), pp. 198–199 | Diagonal defect and quantitative non-approximation bound | `bounded_response_bell_pointwise`, `target_bell_robust_of_four_errors`, `bell1964_four_mul_total_error_lower_bound`, and the two `bell1964_epsilon_*_of_uniform_averaging_errors` conclusions; the role of (21) is incorporated through the `(b,b)` error hypothesis |
 | Example after (22), p. 199 | `a dot c=0`, `a dot b=b dot c=1/sqrt(2)` | `bellA`, `bellB`, `bellC`, their norm/inner-product theorems, and exact singlet values. Stage 6 reuses this later paper example as a modern explicit instantiation of (3)+(15); Stage 7 derives the equation-(22) constant in `singlet_four_mul_error_lower_bound_at_bellDirections`, `singlet_error_lower_bound_at_bellDirections`, and `singlet_uniform_error_lower_bound_on_unitDirections`. |
-| Sec. V, p. 199 | Higher-dimensional embedding/generalization | Later optional generalization after the two-qubit core |
+| Sec. V, p. 199 | Higher-dimensional embedding/generalization | Explicitly deferred in Stage 8. A faithful result needs isometric qubit embeddings, embedded-state support, and support-restricted binary observables: zero extension squares to a subspace projection, not the ambient identity. |
 | Sec. VI, p. 199 | Nonlocal influence, instantaneous signaling, Lorentz claim | Prose interpretation only absent additional physical definitions/premises |
+| Modern generalization (not in Bell 1964) | Bounded-response CHSH inequality and four-direction singlet violation | Stage 8: `bounded_response_chsh`, `target_chsh_of_four_errors`, `singlet_violates_chsh`, `singlet_chsh_error_lower_bound_at_directions`, and finite/global bounded-local-model correlation non-reproduction corollaries. |
 
 ## Preliminary Audit and Correction Log
 
 Stage 1 confirmed or refined every entry below against the scan and paper-level
 mathematics. Detailed source evidence is in `goal-1/1-GUARDRAILS.md`; Stages
-3–7 have since discharged the entries belonging to the exact and robust
+3–8 have since discharged the entries belonging to the exact, robust, and CHSH
 mathematical core, while optional examples and literal angular averaging remain
 pending as identified below.
 
@@ -392,15 +410,28 @@ pending as identified below.
     arbitrary-topology claim.
 26. **“Isotropic mixture of product states” does not uniquely specify equation
     (11).** The coefficient `-1/3` follows from a particular isotropic ensemble,
-    such as uniformly averaging oppositely polarized product states
-    `p ⊗ (-p)`. A future formalization must define that ensemble and derive its
-    second moment; isotropy as informal prose is not by itself a complete
-    mathematical definition.
+    such as uniformly averaging product states polarized along `p` and `-p`.
+    A future formalization must define the one-particle density states and their
+    mixture, then derive the sphere second moment. A finite six-axis
+    antiparallel ensemble gives the same two-point correlation, but that fact
+    alone does not prove that the mixed state is fully rotationally invariant;
+    isotropy as informal prose is not a complete mathematical definition.
 27. **CHSH is a modern generalization, not a claim of the 1964 paper.** Its
     bounded-response form removes the perfect-anticorrelation premise and gives
-    a reusable four-setting inequality. If included in Stage 8, its paper map
-    and theorem documentation must label it as a later corollary rather than
-    assign it to equations (1)–(22).
+    a reusable four-setting inequality. Stage 8 labels it as a later theorem
+    rather than assigning it to equations (1)–(22), calculates the singlet value
+    at four unit directions, and proves the uniform four-error obstruction
+    `(sqrt 2 - 1) / 2 <= eta` without assuming binary responses or perfect
+    anticorrelation.
+28. **A stochastic-local reduction needs conditional factorization.** Local
+    marginals alone do not imply
+    `P(x,y | a,b,lambda) = P_A(x | a,lambda) * P_B(y | b,lambda)`. Under that
+    explicit factorization, binary conditional biases are bounded by one and
+    can feed the Stage 7/8 inequalities. Turning this bias argument into a
+    deterministic random-seed construction additionally requires product
+    probability spaces, measurability, Fubini, and a proof that correlations are
+    preserved; no such reduction is claimed merely by renaming bounded response
+    functions.
 
 ## Dependency and Module Notes
 

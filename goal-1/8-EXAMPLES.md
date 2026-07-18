@@ -354,6 +354,39 @@ conclusion. The only paper-scope hits label CHSH as modern and not a numbered
 1964 theorem. The public-root scan finds `Inequality.CHSH` and
 `Geometry.CHSHViolation` but not `Audit.CHSH`. `git diff --check` passed.
 
+The exact final scan surface was:
+
+```text
+rg -n --glob '*.lean' '\bsorry\b|\badmit\b|^[[:space:]]*axiom\b|\bunsafe\b|\bopaque\b|\bnative_decide\b' formal/Bell
+rg -n '\bsorry\b|\badmit\b|^[[:space:]]*axiom\b|\bunsafe\b|\bopaque\b|\bnative_decide\b' goal-1
+rg -n '^(public )?import Bell\.(Quantum|Geometry|HiddenVariable\.Reproduction|Inequality\.(Original|Robust))|^(public )?import Bell$' formal/Bell/Inequality/CHSH.lean
+rg -n 'IsAEBinaryValued|AliceAEBinary|BobAEBinary|PerfectAnticorrelationAt|ReproducesCorrelation|singletCorrelation|Bell\.Quantum|Bell\.Geometry' formal/Bell/Inequality/CHSH.lean
+rg -n 'def singletCorrelation|axiom.*singlet|h(CHSH|Chsh|Violation|TargetBound|Tsirelson)|target.*-inner|target.*Real\.sqrt' formal/Bell/Inequality/CHSH.lean formal/Bell/Geometry/CHSHViolation.lean
+rg -n '∀ᵐ[^\n]*∀|∀[^\n]*∀ᵐ|iInter|ae_all_iff|Eventually\.all' formal/Bell/Inequality/CHSH.lean formal/Bell/Geometry/CHSHViolation.lean
+rg -n 'hiddenMeasure[[:space:]]*:=[^\n]*(a₀|a₁|b₀|b₁|bellA|bellC|bellB|chshBobMinus)|hiddenMeasure[[:space:]]*:[^\n]*→|Setting[AB][^\n]*→[^\n]*Measure|Measure[^\n]*Setting[AB]' formal/Bell/Inequality/CHSH.lean formal/Bell/Geometry/CHSHViolation.lean formal/Bell/Audit/CHSH.lean
+rg -n 'Measure\.dirac' formal/Bell/Audit/CHSH.lean
+rg -n 'direction_inner_eq_sum|singlet_spin_correlation|chshBobMinus_norm|singlet_chsh_abs_value_eq_two_mul_sqrtTwo' formal/Bell/Geometry/CHSHViolation.lean
+rg -ni '1964 paper|Bell.?s 1964|numbered theorem|modern (generalization|four-setting)' formal/Bell/Inequality/CHSH.lean formal/Bell/Geometry/CHSHViolation.lean
+rg -ni 'signaling|spacetime|Lorentz|superluminal' formal/Bell/Inequality/CHSH.lean formal/Bell/Geometry/CHSHViolation.lean
+rg -n 'Bell\.(Inequality\.CHSH|Geometry\.CHSHViolation|Audit\.CHSH)' formal/Bell.lean
+rg -n 'Audit\.CHSH' formal/Bell.lean
+git diff --check
+git status --short
+```
+
+The Lean-source, abstract-import, abstract-premise, target-shortcut, a.e.-order,
+setting-indexed-measure, and public-root audit-import scans exited `1` with no
+hits. The goal-folder scan exited `0` only on guardrails, command templates,
+prior audit reports, and ordinary English such as “admit averages”; it exposed
+no Lean declaration. The Dirac scan found only the audit model's two diagnostic
+lines. The geometry scan found the expected coordinate-inner-product and
+`singlet_spin_correlation` proof steps. The paper-scope scan found only the
+explicit modern/not-1964 labels, the physical-scope scan found only the explicit
+negative disclaimer, and the positive root scan found exactly the two public
+CHSH imports. `git diff --check` exited `0`. At this verification point,
+`git status --short` listed only the two documentation fold-back files,
+`goal-1/0-plan.md` and `goal-1/8-EXAMPLES.md`.
+
 Stage 9 (`9-RELEASE-AUDIT`) is the next incomplete stage. The preceding
 deferments remain explicit optional future work rather than hidden Stage 8
 obligations.

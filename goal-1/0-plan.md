@@ -117,8 +117,7 @@ unless their concepts receive independent formal definitions.
   re-exports five hidden-variable modules, the target-agnostic uniform-error
   leaf, the original, robust, and CHSH inequality leaves, the separate quantum
   singlet leaf, and the exact, robust, and CHSH geometric integration layers.
-  Nine
-  non-exported audit leaves cover dependency probes, the local-model API, the
+  Nine non-exported audit leaves cover dependency probes, the local-model API, the
   abstract inequalities, quantum conventions/calculation, the concrete
   violations, robustness, and CHSH.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
@@ -421,9 +420,8 @@ pending as identified below.
     a reusable four-setting inequality. Stage 8 labels it as a later theorem
     rather than assigning it to equations (1)–(22), calculates the singlet value
     at four unit directions, and proves the finite common-radius four-error
-    obstruction
-    `(sqrt 2 - 1) / 2 <= eta` without assuming binary responses or perfect
-    anticorrelation.
+    obstruction `(sqrt 2 - 1) / 2 <= eta` without assuming binary responses or
+    perfect anticorrelation.
 28. **A stochastic-local reduction needs conditional factorization.** Local
     marginals alone do not imply
     `P(x,y | a,b,lambda) = P_A(x | a,lambda) * P_B(y | b,lambda)`. Under that

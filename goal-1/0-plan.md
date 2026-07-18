@@ -172,9 +172,10 @@ their concepts receive independent formal definitions.
   at `a,b`, Bob measurability/binary range at `b,c`, normalization, and four
   correlation-reproduction equalities. Reproduction at `(b,b)` derives the
   fixed-`b` a.e. perfect anticorrelation; no global common null set is formed.
-- Stage 7 confirms that Bell's averaged responses in
-  equations (19)–(20) are real-valued and bounded by one, not binary. Direct
-  algebra for such responses gives the reusable defect inequality
+- Stage 7 models Bell's post-factorization averaged responses as real-valued
+  and bounded by one, rather than binary, and takes those bounds as explicit
+  hypotheses. Direct algebra for such responses gives the reusable defect
+  inequality
   `|P(a,b)-P(a,c)| <= 2+P(b,c)+P(b,b)`. The public arbitrary-probability-measure
   theorem assumes only the four relevant response functions are a.e.
   measurable and a.e. bounded by one. Combining four correlation errors of

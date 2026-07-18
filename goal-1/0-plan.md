@@ -3,8 +3,9 @@
 ## Status
 
 - Scaffold created 2026-07-17.
-- Stages 1 (`1-GUARDRAILS`) through 6 (`6-VIOLATION`) completed
-  2026-07-17; Stage 7 (`7-ROBUSTNESS`) began 2026-07-17 and is in progress.
+- Stages 1 (`1-GUARDRAILS`) through 7 (`7-ROBUSTNESS`) completed
+  2026-07-17. Stage 8 (`8-EXAMPLES`) is the next incomplete stage and has not
+  begun.
 - This document is the authoritative strategy, paper map, preliminary correction
   log, dependency plan, and proposed theorem outline.
 - The pinned project now exports a general-measure deterministic local-model
@@ -33,6 +34,14 @@
   `Bell.Audit.Violation`. It proves exact unit-vector geometry, the numerical
   singlet violation, and finite/global correlation non-reproduction theorems.
   Exact results are in `goal-1/6-VIOLATION.md`.
+- Stage 7 added `Bell.HiddenVariable.Bounded`,
+  `Bell.Approximation.Uniform`, `Bell.Inequality.Robust`, and
+  `Bell.Geometry.RobustViolation`, re-exported their stable surface from
+  `Bell.lean`, and added the non-exported `Bell.Audit.Robust`. It proves the
+  bounded-response defect inequality, the exact four-error transfer, the
+  positive singlet uniform-error threshold `(sqrt(2)-1)/4`, and Bell's
+  `epsilon`/`delta` lower bound on explicit unit-setting domains. Exact results
+  and the literal-smearing deferment are in `goal-1/7-ROBUSTNESS.md`.
 - For a fixed triple, checked direct algebra shows equation (15) needs perfect
   anticorrelation only at `b`; requiring it at `c` as well would be stronger
   than necessary. The public direct theorem uses this minimal fixed-`b`
@@ -98,11 +107,12 @@ unless their concepts receive independent formal definitions.
   commands are in `goal-1/1-GUARDRAILS.md`.
 - The Lean project is under `formal/`, pinned to Lean `v4.31.0` and mathlib
   commit `fabf563a7c95a166b8d7b6efca11c8b4dc9d911f`. Its public `Bell` root
-  re-exports four hidden-variable modules, the original-inequality leaf, the
-  separate quantum singlet leaf, and the geometric violation layer. Seven
+  re-exports five hidden-variable modules, the target-agnostic uniform-error
+  leaf, the original and robust inequality leaves, the separate quantum
+  singlet leaf, and the exact and robust geometric integration layers. Eight
   non-exported audit leaves cover dependency probes, the local-model API, the
-  abstract inequality, quantum conventions/calculation, and the concrete
-  violation.
+  abstract inequalities, quantum conventions/calculation, the concrete
+  violation, and robustness.
 - `BUILD-PLAN.md` is a generic Lean workflow that later stages should specialize.
 - The existing Python/uv starter files are unrelated to the intended Lean
   library and should not be deleted or repurposed without an explicit decision.
@@ -136,25 +146,28 @@ unless their concepts receive independent formal definitions.
   at `a,b`, Bob measurability/binary range at `b,c`, normalization, and four
   correlation-reproduction equalities. Reproduction at `(b,b)` derives the
   fixed-`b` a.e. perfect anticorrelation; no global common null set is formed.
-- Stage 7 source synchronization confirms that Bell's averaged responses in
+- Stage 7 confirms that Bell's averaged responses in
   equations (19)–(20) are real-valued and bounded by one, not binary. Direct
   algebra for such responses gives the reusable defect inequality
-  `|P(a,b)-P(a,c)| <= 2+P(b,c)+P(b,b)`. Combining four uniform correlation
-  error bounds of radius `eta` with the Stage 6 directions gives the planned
-  quantitative target `4*eta >= sqrt(2)-1`.
+  `|P(a,b)-P(a,c)| <= 2+P(b,c)+P(b,b)`. The public arbitrary-probability-measure
+  theorem assumes only the four relevant response functions are a.e.
+  measurable and a.e. bounded by one. Combining four correlation errors of
+  radius `eta` with the Stage 6 directions now proves
+  `4*eta >= sqrt(2)-1` and `(sqrt(2)-1)/4 <= eta` in Lean.
 - Because `Direction` is the ambient real three-space rather than a unit-sphere
-  subtype, Stage 7's literal uniform approximation predicate must expose its
-  setting domains and use the unit-direction set. Quantifying over every
+  subtype, Stage 7's `UniformlyWithinOn` predicate exposes both setting domains
+  and the robust singlet theorems use `unitDirectionSet`. Quantifying over every
   ambient vector would be a stronger algebraic convenience, not Bell's claim.
 - Bell does not specify unique angular-cap weights. A literal isolated-point
   smearing theorem would need parameterized local probability measures plus an
   atomlessness or surface-absolute-continuity premise; arbitrary supported
   measures include Dirac masses and do not remove isolated exceptions.
-- Stages 3-6 now check the structural local-model facts, correlation integral,
+- Stages 3–7 now check the structural local-model facts, correlation integral,
   response-product integrability and range, correlation-`-1` implication,
   equation (14), Bell inequality, Pauli/involution properties, singlet
   normalization, equation (3), exact direction geometry, and the concrete
-  contradiction.
+  contradiction, plus the bounded-response robust inequality and exact uniform
+  singlet non-approximation constant.
 
 ### Assumptions and open design hypotheses
 
@@ -180,9 +193,11 @@ unless their concepts receive independent formal definitions.
 - `ReproducesCorrelationAt` and `ReproducesCorrelation` assert only equality of
   correlation expectations at one or all setting pairs. They deliberately do
   not claim reproduction of complete joint laws or all quantum statistics.
-- Bell's smearing argument may be best factored through a more general robust
-  inequality for responses in `[-1,1]`, followed by an optional angular-average
-  instantiation.
+- Bell's smearing argument is factored through the checked general robust
+  inequality for responses in `[-1,1]`. A literal angular-average
+  instantiation remains optional and would require additional center-indexed
+  probability measures, support, joint measurability/product integrability,
+  Fubini, and uniform geometric-error proofs.
 
 ## Success Metrics and Final Verification
 

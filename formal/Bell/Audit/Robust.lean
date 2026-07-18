@@ -93,7 +93,7 @@ example {Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} {f : Ω → ℝ}
 
 -- Uniform error addition is exact for three constant functions.
 example : UniformlyWithinOn (Set.univ : Set Unit) (Set.univ : Set Unit)
-    (fun _ _ => (0 : ℝ)) (fun _ _ => 2) 2 := by
+    (fun _ _ => (0 : ℝ)) (fun _ _ => 2) ((1 : ℝ) + 1) := by
   have h01 : UniformlyWithinOn (Set.univ : Set Unit) (Set.univ : Set Unit)
       (fun _ _ => (0 : ℝ)) (fun _ _ => 1) 1 := by
     refine ⟨by norm_num, ?_⟩
@@ -104,7 +104,7 @@ example : UniformlyWithinOn (Set.univ : Set Unit) (Set.univ : Set Unit)
     refine ⟨by norm_num, ?_⟩
     intro a _ b _
     norm_num
-  simpa using h01.trans_add h12
+  exact h01.trans_add h12
 
 -- The advertised physical domain includes Bell's vectors but excludes zero.
 example : bellA ∈ unitDirectionSet := bellA_mem_unitDirectionSet

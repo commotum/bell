@@ -25,9 +25,8 @@
   `|Q(a,b)-Q(a,c)| <= 2+Q(b,c)+Q(b,b)+4*eta`.
 - At the Stage 6 singlet values this becomes
   `sqrt(2)-1 <= 4*eta`, hence
-  `(sqrt(2)-1)/4 <= eta`. These calculations are independently checked at the
-  paper-mathematics level but remain planning facts until the Stage 7 Lean
-  leaves compile.
+  `(sqrt(2)-1)/4 <= eta`. The Stage 7 finite and uniform Lean theorems now
+  compile with exactly this constant.
 - `Direction` is ambient `EuclideanSpace Real (Fin 3)`, not a unit-sphere
   subtype. Bell's uniform statements range over physical unit settings, so an
   unrestricted `forall a b : Direction` predicate would be stronger and would
@@ -156,33 +155,169 @@ lake build
 
 ## Completion Requirements
 
-- [ ] A public general-measure theorem proves the robust Bell inequality for
+- [x] A public general-measure theorem proves the robust Bell inequality for
   measurable responses bounded by one, with normalization and every fixed
   setting assumption explicit.
-- [ ] A public target-agnostic theorem converts four fixed correlation-error
+- [x] A public target-agnostic theorem converts four fixed correlation-error
   bounds into the exact `4*eta` robust target inequality.
-- [ ] A reusable uniform-error predicate and triangle-addition lemma precisely
+- [x] A reusable uniform-error predicate and triangle-addition lemma precisely
   model equations (16)–(18), with setting domains explicit.
-- [ ] A compiled singlet theorem proves
+- [x] A compiled singlet theorem proves
   `(sqrt(2)-1)/4 <= eta`, and a separate theorem proves this constant positive.
-- [ ] A compiled `epsilon`/`delta` corollary yields
+- [x] A compiled `epsilon`/`delta` corollary yields
   `(sqrt(2)-1)/4-delta <= epsilon` under the explicitly stated uniform bounds.
-- [ ] The documentation states whether equations (19)–(20) are represented by
+- [x] The documentation states whether equations (19)–(20) are represented by
   a generic bounded local model or derived from concrete angular averages, and
   lists every deferred smearing obligation without claiming it proved.
-- [ ] The public theorem conclusions contain no philosophical, signaling, or
+- [x] The public theorem conclusions contain no philosophical, signaling, or
   unsupported approximation-topology claim.
-- [ ] Focused builds, adjacent public/audit builds, and the default full build
+- [x] Focused builds, adjacent public/audit builds, and the default full build
   succeed.
-- [ ] `#print axioms` for bounded integrability, robust inequality, uniform
+- [x] `#print axioms` for bounded integrability, robust inequality, uniform
   triangle, numerical lower bound, and `epsilon`/`delta` headline results
   reports only understood Lean/mathlib foundations.
-- [ ] Proof-hole, target-as-premise, import-boundary, boundedness, quantifier,
+- [x] Proof-hole, target-as-premise, import-boundary, boundedness, quantifier,
   smearing-claim, interpretation, and whitespace scans pass with every
   documentation-only hit classified.
-- [ ] Exact results, failures, source corrections/deferments, theorem mapping,
+- [x] Exact results, failures, source corrections/deferments, theorem mapping,
   and remaining uncertainty are recorded here and folded into `0-plan.md`.
 
 ## Stage Results
 
-- In progress. Fill this section only from checked Stage 7 evidence.
+Stage 7 completed on 2026-07-17.
+
+### Implemented surface and dependency structure
+
+- `Bell.HiddenVariable.Bounded` is a low-dependency public API/proof leaf. It
+  adds `IsBoundedByOne`, `IsAEBoundedByOne`, Alice/Bob setting-wise variants,
+  pointwise/a.e. binary-to-bounded bridges, and
+  `boundedProduct_integrable`. Pointwise and a.e. notions remain distinct.
+- `Bell.Approximation.Uniform` is a target-agnostic public API leaf. Its
+  `UniformlyWithinOn s t f g epsilon` records `0 <= epsilon` and a pointwise
+  absolute-error bound on the explicit product domain `s × t`.
+  `UniformlyWithinOn.trans_add` is the exact equation-(16)+(17) triangle step.
+- `Bell.Inequality.Robust` is the abstract public theorem leaf. It imports only
+  hidden-variable modules and proves:
+  - `bounded_response_bell_pointwise`;
+  - `bounded_response_bell_robust`, the normalized arbitrary-measure result
+    `|P(a,b)-P(a,c)| <= 2+P(b,c)+P(b,b)`; and
+  - `target_bell_robust_of_four_errors`, which transfers four radius-`eta`
+    errors to the exact `4*eta` target inequality.
+- `Bell.Geometry.RobustViolation` is the public integration leaf. It adds
+  `unitDirectionSet`, membership proofs for the three Bell directions, the
+  exact scale and positivity facts, finite and unit-domain singlet lower
+  bounds, and the equation-(22) `epsilon`/`delta` corollaries.
+- `Bell.Audit.Robust` is diagnostic and is deliberately not re-exported. It
+  checks the public root, a normalized one-point model with responses
+  `1/2` and `-1/2` that is provably nonbinary, a sharp scalar case, the
+  binary-to-bounded bridge, exact uniform-error addition, the physical setting
+  domain, theorem signatures, and axioms.
+- `Bell.lean` remains a thin umbrella and now re-exports only the stable Stage 7
+  leaves. The audit leaf remains outside the public root.
+
+The focused modules were built separately before the umbrella was changed.
+The high-fanout pre-existing hidden-variable, quantum, and exact-violation
+leaves were not edited for this stage.
+
+### Checked mathematical mapping
+
+- Equations (16)–(18) are represented by two
+  `UniformlyWithinOn unitDirectionSet unitDirectionSet` hypotheses and
+  `trans_add`. The quantifiers are pointwise over unit settings and outside all
+  hidden-variable a.e. statements.
+- Equations (19)–(20) are represented at the algebraic endpoint by a fixed
+  normalized factorized model with real responses bounded by one a.e. The
+  averaged responses are not asserted to be binary. This stage does **not**
+  derive those responses from angular kernels.
+- The pointwise cancellation independently checks to
+  `|Aa*Bb-Aa*Bc| <= (1+Ab*Bc)+(1+Ab*Bb)`. Both bracket factors are proved
+  nonnegative from the absolute-value bounds before multiplicative absolute
+  values are removed. Integration uses four fixed a.e. bounds only.
+- Four target errors give
+  `|Q(a,b)-Q(a,c)| <= 2+Q(b,c)+Q(b,b)+4*eta`. Substitution of the Stage 6
+  matrix-derived singlet values gives `sqrt(2)-1 <= 4*eta`, hence
+  `(sqrt(2)-1)/4 <= eta`.
+- Taking `eta=epsilon+delta` gives
+  `(sqrt(2)-1)/4-delta <= epsilon`; the separate positivity theorem assumes
+  `delta < (sqrt(2)-1)/4`.
+- In the two-error theorems, `averagedTarget` denotes the averaged quantum
+  correlation (equivalently, the negative averaged dot product under Bell's
+  convention), not the positive averaged dot product.
+
+### Precise deferment of literal angular smearing
+
+Bell does not specify unique weights inside an angular neighborhood. Therefore
+this stage does not silently choose a cap distribution or claim equation (19)
+as a proved Fubini factorization. A later literal construction would require:
+
+- center-indexed Alice and Bob probability measures depending only on their
+  respective local center settings;
+- product independence of the two setting averages and independence from the
+  one fixed hidden-variable measure;
+- probability normalization, unit-sphere/cap support, and a proved uniform
+  `delta` estimate for the calculated singlet correlation;
+- joint setting/hidden-variable measurability or sufficient product
+  integrability, followed by the required Fubini/Tonelli interchange;
+- a proof that the averaged raw local correlation equals the correlation of
+  the two bounded effective responses; and
+- atomlessness or surface absolute continuity if the historical prose claim
+  that isolated exceptional settings are washed out is retained. Arbitrary
+  supported measures include Dirac measures and do not prove that claim.
+
+Thus the compiled result is a uniform non-approximation theorem for any
+bounded effective factorized responses on unit directions. It is not a theorem
+about pointwise, setting-a.e., `L^p`, or every possible approximation topology,
+and it is not a construction of Bell's unspecified angular averages.
+
+### Verification evidence
+
+Focused builds during construction succeeded as follows:
+
+```text
+cd formal
+lake build Bell.HiddenVariable.Bounded       # 2,510 jobs
+lake build Bell.Approximation.Uniform        #   765 jobs
+lake build Bell.Inequality.Robust            # 2,512 jobs
+lake build Bell.Geometry.RobustViolation     # 2,551 jobs
+lake build Bell.Audit.Robust Bell            # 2,554 jobs
+```
+
+The final aggregate focused command
+
+```text
+lake build Bell.HiddenVariable.Bounded Bell.Approximation.Uniform \
+  Bell.Inequality.Robust Bell.Geometry.RobustViolation \
+  Bell.Audit.Robust Bell
+```
+
+succeeded with 2,554 jobs. The default `lake build` succeeded with 2,553 jobs.
+
+Every Stage 7 headline `#print axioms` in `Bell.Audit.Robust` reports exactly:
+
+```text
+[propext, Classical.choice, Quot.sound]
+```
+
+These are understood Lean/mathlib foundations; no project-specific axiom was
+introduced.
+
+The final Lean proof-hole/escape scan found no `sorry`, `admit`, declaration
+`axiom`, `unsafe`, `opaque`, or `native_decide`. Import-boundary scans found no
+quantum, geometry, or umbrella import in `Bounded`, `Uniform`, or `Robust`.
+The robust leaf contains no binary, perfect-anticorrelation, singlet, quantum,
+or geometry reference. Target-shortcut and physical-interpretation scans had
+no hits. The fixed-measure scan found only the stored measure in
+`HiddenVariable.Basic` and ordinary uses of that same measure in the robust
+integrals. The quantifier scan confirms explicit unit-set quantifiers and
+setting-wise a.e. predicates. The only smearing scan hits in Lean are docstrings
+that explicitly disclaim a cap construction and Fubini derivation.
+`git diff --check` passed.
+
+One audit build initially failed because the opaque uniform predicate preserved
+the radius expression `1+1` rather than reducing it definitionally to `2` under
+`simpa`. The diagnostic was corrected to state the exact additive radius
+`(1 : Real)+1`; this changed no theorem or constant. The rebuilt audit passed.
+
+Stage 8 (`8-EXAMPLES`) is the next incomplete stage. Literal angular averaging
+remains an explicit optional future construction rather than hidden unfinished
+work in this completed bounded-response stage.
